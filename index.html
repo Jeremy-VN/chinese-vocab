@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Chinese Word Lists</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: one column; tabs Lists / Study / Progress; user switch top right */
+:root{
+  --bg:#f3f5f4; --surface:#ffffff; --line:#d9e0dd; --fg:#16201d; --muted:#5b6964;
+  --accent:#0f6b5c; --accent-soft:#dcefea; --good:#1f7a3a; --good-soft:#dff1e4; --bad:#b3372a; --bad-soft:#f7e1de; --warn:#9a6400; --warn-soft:#f6ecd6;
+  --han:"Noto Serif SC","Songti SC","SimSun",serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#111816; --surface:#19221f; --line:#2b3733; --fg:#e6ece9; --muted:#9aa8a3;
+  --accent:#5fc4ad; --accent-soft:#1d3a33; --good:#6fcf8a; --good-soft:#1c3324; --bad:#f08a7d; --bad-soft:#3d2320; --warn:#e7b85c; --warn-soft:#3a2f17; color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:calc(20px + env(safe-area-inset-top,0px)) 48px}
+[hidden]{display:none!important}
+.wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+header{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px}
+h1{font-family:var(--han);font-weight:700;font-size:1.7rem;margin:0;line-height:1.2}
+h1 small{display:block;font-family:var(--body);font-weight:500;font-size:.8rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.head-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.tabs{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px}
+.tabs button{border:0;background:none;color:var(--muted);font:600 .9rem var(--body);padding:7px 16px;border-radius:999px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--bg)}
+.who{border:1px solid var(--line);background:var(--surface);color:var(--fg);font:600 .85rem var(--body);padding:7px 12px;border-radius:999px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.who .dot{width:8px;height:8px;border-radius:50%;background:var(--good)}
+.who .dot.off{background:var(--warn)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.label{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--fg);font:500 .85rem var(--body);padding:5px 12px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.group{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.group-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line)}
+.group-head h2{margin:0;font-size:1.05rem;font-weight:600}
+.count{color:var(--muted);font-size:.85rem;font-variant-numeric:tabular-nums}
+.small-btn{border:1px solid var(--accent);background:none;color:var(--accent);font:600 .82rem var(--body);padding:5px 12px;border-radius:8px;cursor:pointer}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+td,th{padding:9px 16px;border-top:1px solid var(--line);vertical-align:baseline;text-align:left}
+th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;border-top:0}
+tr:first-child td{border-top:0}
+thead + tbody tr:first-child td{border-top:1px solid var(--line)}
+td.han{font-family:var(--han);font-size:1.35rem;white-space:nowrap;width:1%}
+td.py{color:var(--accent);white-space:nowrap;width:1%}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+td.sp{width:1%;padding-right:8px}
+.hint{font-size:.82rem;color:var(--muted)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:16px}
+.row{display:grid;gap:8px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:1px solid var(--line);background:var(--bg);color:var(--fg);font:500 .88rem var(--body);padding:7px 12px;border-radius:8px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.range{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.range label{display:flex;gap:6px;align-items:center;font-size:.88rem;color:var(--muted)}
+select,input[type=text],input[type=password]{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.summary-line{font-size:.9rem;color:var(--muted)}
+.summary-line b{color:var(--fg);font-variant-numeric:tabular-nums}
+.primary{background:var(--accent);color:var(--bg);border:0;font:600 1rem var(--body);padding:11px 22px;border-radius:10px;cursor:pointer;justify-self:start}
+.primary:disabled{opacity:.45;cursor:not-allowed}
+.ghost{background:none;border:1px solid var(--line);color:var(--fg);font:500 .9rem var(--body);padding:9px 16px;border-radius:10px;cursor:pointer}
+.progress{display:flex;align-items:center;gap:10px;font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.bar{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .2s}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;min-height:280px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;cursor:pointer;user-select:none}
+.card .dir{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.big-han{font-family:var(--han);font-size:clamp(3rem,13vw,5.5rem);line-height:1.1;font-weight:500}
+.big-py{font-size:clamp(1.6rem,6vw,2.4rem);color:var(--accent);font-weight:500}
+.big-en{font-size:clamp(1.5rem,6vw,2.2rem);font-weight:600;text-wrap:balance}
+.answer{border-top:1px dashed var(--line);padding-top:14px;width:100%;display:flex;flex-direction:column;gap:6px;align-items:center}
+.answer .a-han{font-family:var(--han);font-size:2.4rem}
+.answer .a-py{color:var(--accent);font-size:1.3rem}
+.answer .a-en{font-size:1.2rem;font-weight:600}
+.grade{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grade button{border:0;font:600 1rem var(--body);padding:13px;border-radius:10px;cursor:pointer}
+.miss{background:var(--bad-soft);color:var(--bad)}
+.got{background:var(--good-soft);color:var(--good)}
+.actions,.btn-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.result{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;display:grid;gap:14px}
+.score{font-family:var(--mono);font-size:2.4rem;font-variant-numeric:tabular-nums}
+.missed-list{display:flex;flex-wrap:wrap;gap:8px}
+.missed-list span{background:var(--bad-soft);color:var(--bad);padding:4px 10px;border-radius:8px;font-size:.9rem}
+.missed-list span b{font-family:var(--han);font-weight:500;margin-right:6px}
+.say{border:1px solid var(--line);background:var(--bg);color:var(--accent);border-radius:999px;width:34px;height:34px;display:inline-grid;place-items:center;cursor:pointer;flex:none;padding:0}
+.say svg{width:16px;height:16px;fill:currentColor}
+.say.lg{width:44px;height:44px}.say.lg svg{width:20px;height:20px}
+.type-row{display:flex;gap:8px;align-items:stretch}
+.type-row input{flex:1;min-width:0;font:500 1.15rem var(--body);background:var(--surface);border-radius:10px;padding:11px 14px}
+.type-row input.zh{font-family:var(--han)}
+.mic{border:1px solid var(--line);background:var(--surface);color:var(--accent);border-radius:10px;width:48px;cursor:pointer;display:grid;place-items:center;flex:none}
+.mic svg{width:20px;height:20px;fill:currentColor}
+.mic[data-on="1"]{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.choices{display:grid;gap:8px}
+.choice{display:flex;align-items:center;gap:12px;text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--fg);font:500 1.05rem var(--body);padding:11px 14px;border-radius:10px;cursor:pointer}
+.choice .k{font:500 .8rem var(--mono);color:var(--muted);border:1px solid var(--line);border-radius:6px;width:24px;height:24px;display:grid;place-items:center;flex:none}
+.choice .c-han{font-family:var(--han);font-size:1.3rem}
+.choice .c-py{color:var(--accent);font-size:.95rem}
+.choice.right{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+.choice.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.choice:disabled{cursor:default}
+.verdict{border-radius:10px;padding:10px 14px;font-weight:600;display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
+.verdict.ok{background:var(--good-soft);color:var(--good)}
+.verdict.no{background:var(--bad-soft);color:var(--bad)}
+.verdict .yours{font-weight:400;color:var(--fg)}
+.linkish{background:none;border:0;color:var(--muted);font:500 .85rem var(--body);text-decoration:underline;cursor:pointer;padding:0}
+/* progress */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:2px}
+.tile b{font:500 1.6rem var(--mono);font-variant-numeric:tabular-nums}
+.tile span{font-size:.8rem;color:var(--muted)}
+.section{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.section > h3{margin:0;padding:12px 16px;font-size:1rem;font-weight:600;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.section .body{padding:14px 16px;display:grid;gap:10px}
+.heat{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,14px);gap:3px;overflow-x:auto;padding-bottom:4px}
+.heat i{width:14px;height:14px;border-radius:3px;background:var(--line)}
+.heat i[data-l="1"]{background:color-mix(in srgb,var(--accent) 30%,var(--line))}
+.heat i[data-l="2"]{background:color-mix(in srgb,var(--accent) 60%,var(--line))}
+.heat i[data-l="3"]{background:var(--accent)}
+.heat i.today{outline:1.5px solid var(--fg);outline-offset:1px}
+.meter{height:8px;background:var(--line);border-radius:4px;overflow:hidden;min-width:80px}
+.meter i{display:block;height:100%}
+.pill{display:inline-block;font-size:.75rem;font-weight:600;padding:2px 8px;border-radius:999px}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.ok{background:var(--good-soft);color:var(--good)}
+.empty{color:var(--muted);font-size:.9rem}
+/* gate */
+.gate{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;display:grid;gap:14px;max-width:460px}
+.gate h2{margin:0;font-size:1.2rem}
+.err{color:var(--bad);font-size:.88rem}
+.sync{font-size:.8rem;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1><small>Year 9 · Chinese</small>词语 Word Lists</h1>
+    <div class="head-right">
+      <div class="tabs" role="tablist">
+        <button id="tab-lists" role="tab" aria-selected="true">Lists</button>
+        <button id="tab-study" role="tab" aria-selected="false">Study</button>
+        <button id="tab-prog" role="tab" aria-selected="false">Progress</button>
+      </div>
+      <button class="who" id="who" hidden><span class="dot" id="who-dot"></span><span id="who-name"></span> ▾</button>
+    </div>
+  </header>
+
+  <!-- GATE: family code, then who's using it -->
+  <section id="gate" hidden>
+    <div class="gate" id="gate-code">
+      <h2>Set up this device</h2>
+      <div class="hint">Enter the family code once. It's remembered on this device.</div>
+      <form id="code-form" class="btn-row">
+        <input type="password" id="code" autocomplete="off" placeholder="family code" aria-label="Family code" style="flex:1;min-width:0">
+        <button class="primary" type="submit">Continue</button>
+      </form>
+      <div class="err" id="code-err" hidden></div>
+      <button class="linkish" id="skip-save" type="button">Practise without saving results</button>
+    </div>
+    <div class="gate" id="gate-who" hidden>
+      <h2>Who's using this?</h2>
+      <div class="btn-row" id="who-buttons"></div>
+      <div class="hint">Results are saved under this name. You can switch any time from the top right.</div>
+    </div>
+  </section>
+
+  <!-- LISTS -->
+  <section id="view-lists" style="display:grid;gap:14px">
+    <div style="display:flex;gap:8px;align-items:flex-start"><span class="label" style="padding-top:6px">Show</span><div id="list-filter" style="display:grid;gap:8px;min-width:0;flex:1"></div></div>
+    <div id="groups" style="display:grid;gap:14px"></div>
+  </section>
+
+  <!-- STUDY -->
+  <section id="view-study" hidden style="display:grid;gap:14px">
+    <div id="setup" class="panel">
+      <div class="row">
+        <span class="label">Which words</span>
+        <div class="seg" id="pick-mode">
+          <button data-v="lists" aria-pressed="true">By list</button>
+          <button data-v="range" aria-pressed="false">Range of lists</button>
+          <button data-v="all" aria-pressed="false">All words</button>
+          <button data-v="weak" aria-pressed="false">My weak words</button>
+        </div>
+        <div id="pick-lists" style="display:grid;gap:8px"></div>
+        <div id="pick-range" class="range" hidden>
+          <label>From <select id="from"></select></label>
+          <label>To <select id="to"></select></label>
+        </div>
+        <div id="pick-weak" class="hint" hidden></div>
+      </div>
+      <div class="row">
+        <span class="label">Direction</span>
+        <div class="seg" id="dir">
+          <button data-v="c2e" aria-pressed="true">Chinese → English</button>
+          <button data-v="e2c" aria-pressed="false">English → Chinese</button>
+          <button data-v="mix" aria-pressed="false">Random mix</button>
+          <button data-v="h2p" aria-pressed="false">Characters → Pinyin</button>
+        </div>
+      </div>
+      <div class="row" id="show-row">
+        <span class="label">Show the Chinese as</span>
+        <div class="seg" id="show">
+          <button data-v="han" aria-pressed="true">Characters only</button>
+          <button data-v="py" aria-pressed="false">Pinyin only</button>
+          <button data-v="both" aria-pressed="false">Both</button>
+        </div>
+      </div>
+      <div class="row">
+        <span class="label">How to answer</span>
+        <div class="seg" id="answer">
+          <button data-v="type" aria-pressed="true">Type or say it</button>
+          <button data-v="choice" aria-pressed="false">Pick from 5</button>
+          <button data-v="flip" aria-pressed="false">Just flip (self-check)</button>
+        </div>
+      </div>
+      <div class="row">
+        <span class="label">Order</span>
+        <div class="seg" id="order">
+          <button data-v="shuffle" aria-pressed="true">Shuffled</button>
+          <button data-v="list" aria-pressed="false">As listed</button>
+        </div>
+      </div>
+      <div class="summary-line" id="pick-summary"></div>
+      <button class="primary" id="start">Start cards</button>
+    </div>
+
+    <div id="session" hidden style="display:grid;gap:14px">
+      <div class="progress"><span id="prog-text"></span><div class="bar"><i id="prog-bar"></i></div><button class="ghost" id="quit">End</button></div>
+      <div class="card" id="card" tabindex="0" aria-live="polite"></div>
+      <div id="respond" style="display:grid;gap:10px"></div>
+      <div class="grade" id="grade" hidden>
+        <button class="miss" id="btn-miss">Didn't know (1)</button>
+        <button class="got" id="btn-got">Knew it (2)</button>
+      </div>
+    </div>
+    <div id="result" class="result" hidden></div>
+  </section>
+
+  <!-- PROGRESS -->
+  <section id="view-prog" hidden style="display:grid;gap:14px">
+    <div class="btn-row" id="prog-who-row" hidden><span class="label">Showing</span><div class="seg" id="prog-who"></div></div>
+    <div id="prog-body" style="display:grid;gap:14px"></div>
+  </section>
+
+  <div class="sync" id="sync"></div>
+</div>
+
+<script src="data.js"></script>
+<script src="audio.js"></script>
+<script>
+/* ===================== config ===================== */
+const API = "https://fdcwwgkvjmiuhjxpeomz.supabase.co/rest/v1/rpc/";
+const KEY = "sb_publishable_52uD0N8HeXwdsG87e3ZrWw_094qnGiS";   // publishable key: data is only reachable through code-checked functions
+const TERM_SPAN = {"Year 9 Term 3":"21 Jul – 18 Sep", "Year 9 Term 4":"5 Oct – 9 Dec"};
+
+/* ===================== helpers ===================== */
+const $ = s=>document.querySelector(s);
+const esc = s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const store = {get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+               set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const uuid = ()=> (crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return (c==='x'?r:(r&3|8)).toString(16);}));
+const WORDS = window.WORDS, NOTES = window.NOTES||{}, AUDIO = window.AUDIO||{};
+const DATES = [...new Set(WORDS.map(w=>w.date))];
+const MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const undated = d=>/^T\d-\d+$/.test(d);
+const fmt = d=>{ if(undated(d)){const [t,n]=d.slice(1).split("-");return `Term ${t} · List ${n}`;} const [y,m,dd]=d.split("-");return `${+dd} ${MON[+m-1]} ${y}`;};
+const fmtShort = d=>{ if(undated(d)){const [t,n]=d.slice(1).split("-");return `T${t} #${n}`;} const [y,m,dd]=d.split("-");return `${+dd} ${MON[+m-1]}`;};
+const termOf = d=> undated(d) ? `Year 9 Term ${d[1]}` : (d < "2026-09-19" ? "Year 9 Term 3" : "Year 9 Term 4");
+const TERMS = [...new Set(DATES.map(termOf))];
+const WORD_BY = Object.fromEntries(WORDS.map(w=>[w.han+"|"+w.date,w]));
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+const median = a=>{ if(!a.length) return null; const s=[...a].sort((x,y)=>x-y), m=s.length>>1; return s.length%2?s[m]:(s[m-1]+s[m])/2; };
+const secs = ms=> ms==null ? "–" : (ms/1000).toFixed(1)+" s";
+const localDay = t=>{ const d=new Date(t); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
+
+/* ===================== identity + sync ===================== */
+let auth = store.get("cv-auth", null);      // {code, learners:[{id,name,role}], learnerId} | {guest:true}
+let queue = store.get("cv-queue", {sessions:{}, attempts:{}});
+let history = store.get("cv-history", {});  // learnerId -> {sessions, attempts, fetchedAt}
+const me = ()=> auth && !auth.guest ? (auth.learners||[]).find(l=>l.id===auth.learnerId) : null;
+
+async function rpc(fn, body){
+  const r = await fetch(API+fn,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify(body)});
+  if(!r.ok) throw new Error(fn+" "+r.status);
+  return r.json();
+}
+function saveQueue(){ store.set("cv-queue", queue); renderSync(); }
+let flushing=false, flushTimer=null;
+function scheduleFlush(ms=1500){ clearTimeout(flushTimer); flushTimer=setTimeout(flush, ms); }
+async function flush(){
+  if(flushing || !auth || auth.guest) return;
+  const ss=Object.values(queue.sessions), as=Object.values(queue.attempts);
+  if(!ss.length && !as.length) return renderSync();
+  flushing=true;
+  try{
+    await rpc("vocab_log",{p_code:auth.code,p_sessions:ss,p_attempts:as});
+    ss.forEach(s=>{ if(queue.sessions[s.id]===s) delete queue.sessions[s.id]; });
+    as.forEach(a=>{ if(queue.attempts[a.id]===a) delete queue.attempts[a.id]; });
+    saveQueue(); lastSyncOk=true;
+  }catch(e){ lastSyncOk=false; renderSync(); setTimeout(()=>scheduleFlush(0), 30000); }
+  finally{ flushing=false; }
+}
+let lastSyncOk=null;
+function renderSync(){
+  const n=Object.keys(queue.attempts).length;
+  const el=$("#sync"); if(!el) return;
+  if(!auth || auth.guest){ el.textContent = auth&&auth.guest ? "Practice mode: results are not being saved." : ""; }
+  else if(n && lastSyncOk===false) el.textContent = `${n} answer${n>1?"s":""} saved on this device; will upload when the connection is back.`;
+  else if(n) el.textContent = `Saving ${n} answer${n>1?"s":""}…`;
+  else el.textContent = "All results saved.";
+  const dot=$("#who-dot"); if(dot) dot.className = "dot"+(n && lastSyncOk===false ? " off":"");
+}
+function logSession(s){ if(!me()) return; queue.sessions[s.id]={...s}; saveQueue(); scheduleFlush(); }
+function logAttempt(a){ if(!me()) return; queue.attempts[a.id]={...a}; saveQueue(); scheduleFlush();
+  const h=history[a.learner_id]; if(h){ const i=h.attempts.findIndex(x=>x.id===a.id); if(i>=0) h.attempts[i]=a; else h.attempts.push(a); } }
+async function loadHistory(learnerId){
+  if(!auth || auth.guest) return null;
+  try{
+    const h = await rpc("vocab_history",{p_code:auth.code,p_learner:learnerId});
+    if(h){ h.fetchedAt=Date.now(); history[learnerId]=h; store.set("cv-history",history); }
+  }catch(e){}
+  const h = history[learnerId] || {sessions:[],attempts:[]};
+  // fold in anything still waiting to upload
+  const ids=new Set(h.attempts.map(a=>a.id));
+  Object.values(queue.attempts).filter(a=>a.learner_id===learnerId).forEach(a=>{ if(!ids.has(a.id)) h.attempts.push(a); else h.attempts[h.attempts.findIndex(x=>x.id===a.id)]=a; });
+  history[learnerId]=h; return h;
+}
+
+/* ===================== gate ===================== */
+function showGate(step){
+  $("#gate").hidden=false; ["#view-lists","#view-study","#view-prog"].forEach(s=>$(s).hidden=true);
+  $("#gate-code").hidden = step!=="code"; $("#gate-who").hidden = step!=="who";
+  if(step==="who"){
+    $("#who-buttons").innerHTML = auth.learners.map(l=>`<button class="primary" data-id="${l.id}">${esc(l.name)}</button>`).join("") +
+      `<button class="ghost" data-id="guest">Just practising (don't save)</button>`;
+    $("#who-buttons").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+      if(b.dataset.id==="guest"){ auth={...auth, learnerId:null, guestOnce:true}; }
+      else auth.learnerId=b.dataset.id;
+      store.set("cv-auth",auth); enterApp();
+    });
+  } else setTimeout(()=>$("#code").focus(),50);
+}
+$("#code-form").onsubmit=async e=>{
+  e.preventDefault(); const code=$("#code").value.trim().toLowerCase(); const err=$("#code-err"); err.hidden=true;
+  if(!code) return;
+  try{
+    const r=await rpc("vocab_join",{p_code:code});
+    if(!r){ err.textContent="That code didn't work. Check it and try again."; err.hidden=false; return; }
+    auth={code, learners:r.learners, learnerId:null}; store.set("cv-auth",auth); showGate("who");
+  }catch(x){ err.textContent="Couldn't reach the server. Check the internet connection, or practise without saving."; err.hidden=false; }
+};
+$("#skip-save").onclick=()=>{ auth={guest:true}; store.set("cv-auth",auth); enterApp(); };
+$("#who").onclick=()=>{ if(!auth || auth.guest){ auth=null; store.set("cv-auth",null); showGate("code"); } else showGate("who"); };
+function enterApp(){
+  $("#gate").hidden=true; showTab(currentTab||"lists");
+  const m=me(); $("#who").hidden=false;
+  $("#who-name").textContent = m ? m.name : (auth&&auth.code ? "Not saving" : "Set up saving");
+  renderSync(); renderSetup();
+  if(m){ loadHistory(m.id).then(()=>{ renderSetup(); if(currentTab==="prog") renderProgress(); }); }
+  flush();
+}
+
+/* ===================== pronunciation ===================== */
+const ICON='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
+let curAudio=null, audioUsed=false;
+function say(text){
+  audioUsed=true;
+  const src=AUDIO[text];
+  if(src){ try{ if(curAudio) curAudio.pause(); curAudio=new Audio(src); curAudio.play().catch(()=>ttsSay(text)); return; }catch(e){} }
+  ttsSay(text);
+}
+function ttsSay(text){
+  const tts=window.speechSynthesis; if(!tts) return;
+  tts.cancel(); const u=new SpeechSynthesisUtterance(text.replace(/[….]+/g,"，")); u.lang="zh-CN"; u.rate=.8; tts.speak(u);
+}
+const sayBtn=(han,lg)=>`<button class="say${lg?' lg':''}" data-say="${esc(han)}" aria-label="Say ${esc(han)}">${ICON}</button>`;
+function bindSay(root){ root.querySelectorAll("[data-say]").forEach(b=>b.onclick=e=>{e.stopPropagation();say(b.dataset.say);}); }
+
+/* ===================== tabs ===================== */
+let currentTab="lists";
+function showTab(t){
+  currentTab=t;
+  [["lists","#view-lists"],["study","#view-study"],["prog","#view-prog"]].forEach(([k,s])=>{ $("#tab-"+k).setAttribute("aria-selected",k===t); $(s).hidden=k!==t; });
+  if(t==="prog") renderProgress();
+}
+$("#tab-lists").onclick=()=>{ if(!$("#gate").hidden) return; showTab("lists"); };
+$("#tab-study").onclick=()=>{ if(!$("#gate").hidden) return; showTab("study"); };
+$("#tab-prog").onclick=()=>{ if(!$("#gate").hidden) return; showTab("prog"); };
+
+/* ===================== lists view ===================== */
+let listShow="all";
+function renderListFilter(){
+  const chip=(v,l,strong)=>`<button class="chip" data-v="${v}" aria-pressed="${v===listShow}">${strong?`<b>${l}</b>`:l}</button>`;
+  const row=inner=>`<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">${inner}</div>`;
+  $("#list-filter").innerHTML = row(chip("all","All lists",true)) +
+    TERMS.slice().reverse().map(t=>row(chip("term:"+t,t.replace("Year 9 ",""),true)+DATES.filter(d=>termOf(d)===t).reverse().map(d=>chip(d,fmtShort(d))).join(""))).join("");
+  $("#list-filter").querySelectorAll("button").forEach(b=>b.onclick=()=>{listShow=b.dataset.v;renderListFilter();renderGroups();});
+}
+function renderGroups(){
+  const ds = listShow==="all" ? DATES.slice().reverse() : listShow.startsWith("term:") ? DATES.filter(d=>termOf(d)===listShow.slice(5)).reverse() : [listShow];
+  $("#groups").innerHTML = ds.map(d=>{
+    const ws=WORDS.filter(w=>w.date===d);
+    return `<div class="group">
+      <div class="group-head"><div><h2>${fmt(d)}</h2><span class="count">${termOf(d)} (${TERM_SPAN[termOf(d)]||""})${undated(d)?" · undated":""} · ${ws.length} words</span></div>
+        <button class="small-btn" data-study="${d}">Study this list</button></div>
+      ${NOTES[d]?`<div style="padding:8px 16px;border-bottom:1px solid var(--line)" class="hint">${esc(NOTES[d])}</div>`:""}
+      <div class="tablewrap"><table>${ws.map(w=>`<tr><td class="sp">${sayBtn(w.han)}</td><td class="han">${esc(w.han)}</td><td class="py">${esc(w.py)}</td><td>${esc(w.en)}</td></tr>`).join("")}</table></div>
+    </div>`;}).join("");
+  bindSay($("#groups"));
+  $("#groups").querySelectorAll("[data-study]").forEach(b=>b.onclick=()=>{ cfg.pick="lists"; cfg.lists=[b.dataset.study]; saveCfg(); showTab("study"); resetToSetup(); });
+}
+
+/* ===================== study setup ===================== */
+const cfg = Object.assign({pick:"lists",lists:[DATES[DATES.length-1]],from:DATES[0],to:DATES[DATES.length-1],dir:"c2e",show:"han",answer:"type",order:"shuffle"}, store.get("cv-cfg",{}));
+cfg.lists=(cfg.lists||[]).filter(d=>DATES.includes(d));
+if(!DATES.includes(cfg.from)) cfg.from=DATES[0];
+if(!DATES.includes(cfg.to)) cfg.to=DATES[DATES.length-1];
+function saveCfg(){ store.set("cv-cfg",cfg); }
+function bindSeg(sel,key){ $(sel).querySelectorAll("button").forEach(b=>b.onclick=()=>{cfg[key]=b.dataset.v;saveCfg();renderSetup();}); }
+bindSeg("#pick-mode","pick"); bindSeg("#dir","dir"); bindSeg("#show","show"); bindSeg("#order","order"); bindSeg("#answer","answer");
+$("#from").onchange=e=>{cfg.from=e.target.value;saveCfg();renderSetup();};
+$("#to").onchange=e=>{cfg.to=e.target.value;saveCfg();renderSetup();};
+
+function selectedWords(){
+  if(cfg.pick==="all") return WORDS.slice();
+  if(cfg.pick==="weak") return weakWords().map(x=>x.w);
+  if(cfg.pick==="range"){ let a=DATES.indexOf(cfg.from), b=DATES.indexOf(cfg.to); if(a>b)[a,b]=[b,a]; const ks=DATES.slice(a,b+1); return WORDS.filter(w=>ks.includes(w.date)); }
+  return WORDS.filter(w=>cfg.lists.includes(w.date));
+}
+function renderSetup(){
+  [["#pick-mode","pick"],["#dir","dir"],["#show","show"],["#order","order"],["#answer","answer"]].forEach(([s,k])=>$(s).querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===cfg[k])));
+  $("#pick-lists").hidden=cfg.pick!=="lists"; $("#pick-range").hidden=cfg.pick!=="range"; $("#pick-weak").hidden=cfg.pick!=="weak";
+  $("#pick-lists").innerHTML = TERMS.slice().reverse().map(t=>{
+    const ks=DATES.filter(d=>termOf(d)===t).reverse(), all=ks.every(k=>cfg.lists.includes(k));
+    return `<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><button class="chip" data-term="${esc(t)}" aria-pressed="${all}"><b>All ${esc(t.replace("Year 9 ",""))}</b></button>`+
+      ks.map(d=>`<button class="chip" data-v="${d}" aria-pressed="${cfg.lists.includes(d)}">${fmtShort(d)} · ${WORDS.filter(w=>w.date===d).length}</button>`).join("")+`</div>`;}).join("");
+  $("#pick-lists").querySelectorAll("button[data-v]").forEach(b=>b.onclick=()=>{const d=b.dataset.v; cfg.lists=cfg.lists.includes(d)?cfg.lists.filter(x=>x!==d):[...cfg.lists,d]; saveCfg(); renderSetup();});
+  $("#pick-lists").querySelectorAll("button[data-term]").forEach(b=>b.onclick=()=>{const ks=DATES.filter(d=>termOf(d)===b.dataset.term), all=ks.every(k=>cfg.lists.includes(k)); cfg.lists= all?cfg.lists.filter(x=>!ks.includes(x)):[...new Set([...cfg.lists,...ks])]; saveCfg(); renderSetup();});
+  const opt=DATES.map(d=>`<option value="${d}">${fmtShort(d)} (${termOf(d).replace("Year 9 ","")})</option>`).join("");
+  $("#from").innerHTML=opt; $("#to").innerHTML=opt; $("#from").value=cfg.from; $("#to").value=cfg.to;
+  if(cfg.pick==="weak"){
+    const ww=weakWords();
+    $("#pick-weak").textContent = !me() ? "Choose a name (top right) so the app can see your past results." :
+      ww.length ? `Your trouble words first, then words you haven't practised for a while (${ww.length} words).` : "Not enough history yet. Do a few sessions first, then this fills itself.";
+  }
+  $("#show-row").hidden = cfg.dir==="e2c" || cfg.dir==="h2p";
+  const n=selectedWords().length;
+  $("#pick-summary").innerHTML = n ? `<b>${n}</b> word${n>1?"s":""} selected` : "No words in that selection.";
+  $("#start").disabled=!n;
+}
+
+/* ===================== answer checking ===================== */
+const strip=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+function pyParts(s){ s=s.toLowerCase().replace(/u:/g,"v").normalize("NFD"); const T={"\u0304":"1","\u0301":"2","\u030c":"3","\u0300":"4"}; let letters="",tones="";
+  for(const ch of s){ if(T[ch]) tones+=T[ch]; else if(ch==="\u0308"){ if(letters.endsWith("u")) letters=letters.slice(0,-1)+"v"; } else if(/[1-4]/.test(ch)) tones+=ch; else if(/[a-z]/.test(ch)) letters+=ch; }
+  return {letters,tones}; }
+const hanOnly=s=>(s.match(/[\u3400-\u9fff]/g)||[]).join("");
+function lev(a,b){const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=[...Array(n+1).keys()];for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c;}return p[n];}
+function enNorm(s){ return strip(s.toLowerCase()).replace(/[^a-z ]/g," ").replace(/\b(to|a|an|the|be|is)\b/g," ").replace(/\s+/g,"").replace(/(es|s)$/,""); }
+function enCandidates(en){ const o=new Set(); en.split(/[;,/]/).forEach(p=>{o.add(enNorm(p.replace(/\(.*?\)/g,"")));o.add(enNorm(p.replace(/[()]/g,"")));}); o.delete(""); return [...o]; }
+function checkEnglish(input,w){ const x=enNorm(input); if(!x) return {ok:false,err:"meaning"};
+  for(const c of enCandidates(w.en)){ const tol=c.length>=9?2:c.length>=5?1:0; if(x===c||lev(x,c)<=tol) return {ok:true}; } return {ok:false,err:"meaning"}; }
+function checkChinese(input,w,pinyinTest){
+  const h=hanOnly(input);
+  if(h && !pinyinTest) return h===hanOnly(w.han) ? {ok:true} : {ok:false,err:"characters"};
+  const you=pyParts(input), tgt=pyParts(w.py);
+  if(!you.letters) return {ok:false,err:"letters"};
+  if(you.letters!==tgt.letters) return {ok:false,err:"letters"};
+  if(you.tones===tgt.tones) return {ok:true};
+  if(!you.tones) return {ok:true, note:"Letters right. You didn't give tones, so tones weren't checked."};
+  return {ok:false, err:"tones", note:"Letters right, tones wrong."};
+}
+
+/* ===================== session ===================== */
+let deck=[], idx=0, missed=[], got=0, state=null, sess=null;
+const answerKind=dir=> dir==="c2e"?"en": dir==="e2c"?"zh":"py";
+function chineseFront(w){ if(cfg.show==="py") return `<div class="big-py">${esc(w.py)}</div>`; if(cfg.show==="both") return `<div class="big-han">${esc(w.han)}</div><div class="big-py">${esc(w.py)}</div>`; return `<div class="big-han">${esc(w.han)}</div>`; }
+function fullAnswer(w){ return `<div class="answer"><div class="a-han">${esc(w.han)}</div><div class="a-py">${esc(w.py)}</div><div class="a-en">${esc(w.en)}</div>${sayBtn(w.han,true)}</div>`; }
+
+function startSession(words, label){
+  deck=(cfg.order==="shuffle"||cfg.pick==="weak"?shuffle(words.slice()):words.slice()).map(w=>({w,dir:cfg.dir==="mix"?(Math.random()<.5?"c2e":"e2c"):cfg.dir}));
+  idx=0; missed=[]; got=0;
+  const m=me();
+  sess = { id:uuid(), learner_id:m?m.id:null, started_at:new Date().toISOString(), ended_at:null, n_cards:0, n_correct:0,
+           settings:{pick:label||cfg.pick, lists:cfg.pick==="lists"?cfg.lists:undefined, from:cfg.pick==="range"?cfg.from:undefined, to:cfg.pick==="range"?cfg.to:undefined, dir:cfg.dir, show:cfg.show, answer:cfg.answer, size:deck.length} };
+  logSession(sess);
+  $("#setup").hidden=true; $("#result").hidden=true; $("#session").hidden=false; showCard();
+}
+function showCard(){
+  stopMic(); audioUsed=false;
+  const {w,dir}=deck[idx];
+  state={phase:"ask", shownAt:new Date(), t0:performance.now()};
+  $("#prog-text").textContent=`${idx+1} / ${deck.length}`; $("#prog-bar").style.width=`${idx/deck.length*100}%`;
+  let front="",label="";
+  if(dir==="c2e"){label="What does it mean?"; front=chineseFront(w)+sayBtn(w.han,true);}
+  else if(dir==="e2c"){label="How do you say it in Chinese?"; front=`<div class="big-en">${esc(w.en)}</div>`;}
+  else {label="What's the pinyin?"; front=`<div class="big-han">${esc(w.han)}</div>`;}
+  const hint = cfg.answer==="flip" ? `<div class="hint">Say your answer out loud, then tap or press Space to check</div>` : "";
+  $("#card").innerHTML=`<div class="dir">${label}</div>${front}${hint}`; bindSay($("#card"));
+  $("#grade").hidden=true; renderRespond();
+}
+function renderRespond(){
+  const {w,dir}=deck[idx], kind=answerKind(dir), R=$("#respond");
+  if(cfg.answer==="flip"){ R.innerHTML=""; return; }
+  if(cfg.answer==="type"){
+    const ph = kind==="en"?"Type the English meaning": kind==="zh"?"Type pinyin (mian4 bao1 or mian bao) or characters":"Type the pinyin (tones: mian4 bao1)";
+    R.innerHTML=`<div class="type-row"><input id="ans" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" class="${kind!=="en"?"zh":""}" placeholder="${ph}" aria-label="Your answer">${REC?`<button class="mic" id="mic" aria-label="Say your answer">${MIC}</button>`:""}</div>
+      <div class="btn-row"><button class="primary" id="check">Check</button><button class="ghost" id="dunno">I don't know</button></div>`;
+    $("#ans").focus({preventScroll:true});
+    $("#check").onclick=()=>submitTyped($("#ans").value);
+    $("#dunno").onclick=()=>submitTyped("");
+    if(REC) $("#mic").onclick=micClick;
+    return;
+  }
+  const opts=choicesFor(w,kind); state.opts=opts;
+  R.innerHTML=`<div class="choices">${opts.map((o,i)=>`<button class="choice" data-i="${i}"><span class="k">${i+1}</span><span>${optLabel(o,kind)}</span></button>`).join("")}</div>`;
+  R.querySelectorAll(".choice").forEach(b=>b.onclick=()=>pickChoice(+b.dataset.i));
+}
+function optLabel(o,kind){ if(kind==="en") return esc(o.en); if(kind==="py") return `<span class="c-py" style="font-size:1.1rem">${esc(o.py)}</span>`; return `<span class="c-han">${esc(o.han)}</span> <span class="c-py">${esc(o.py)}</span>`; }
+function choicesFor(w,kind){
+  const key=o=> kind==="en"?enCandidates(o.en).join("|"): kind==="py"?o.py:o.han;
+  const tgtEn=enCandidates(w.en);
+  const pool=shuffle(WORDS.filter(o=>o.han!==w.han && key(o)!==key(w) && !(kind==="en" && enCandidates(o.en).some(c=>tgtEn.includes(c)))));
+  const picked=[], seen=new Set([key(w)]);
+  for(const o of pool){ if(picked.length>=4) break; if(!seen.has(key(o))){seen.add(key(o));picked.push(o);} }
+  return shuffle([w,...picked]);
+}
+function record(correct, answerText, chosen, err){
+  const {w,dir}=deck[idx], m=me();
+  const a={ id:uuid(), learner_id:m?m.id:null, session_id:sess.id, word:w.han, list_key:w.date, direction:dir, answer_mode:cfg.answer,
+            shown_at:state.shownAt.toISOString(), response_ms:Math.round(performance.now()-state.t0), correct, overridden:false,
+            answer_text:answerText??null, chosen_word:chosen??null, error_type:correct?null:(err||null), audio_played:audioUsed };
+  state.attempt=a; logAttempt(a);
+}
+function pickChoice(i){
+  if(state.phase!=="ask") return;
+  const {w}=deck[idx], o=state.opts[i], ok=o.han===w.han;
+  $("#respond").querySelectorAll(".choice").forEach((b,j)=>{ b.disabled=true; if(state.opts[j].han===w.han) b.classList.add("right"); else if(j===i) b.classList.add("wrong"); });
+  record(ok, null, o.han, ok?null:"choice");
+  reveal(ok,null,null);
+}
+function submitTyped(text){
+  if(state.phase!=="ask") return; stopMic();
+  const {w,dir}=deck[idx], kind=answerKind(dir), t=text.trim();
+  const res = !t ? {ok:false,err:"skipped"} : kind==="en" ? checkEnglish(t,w) : checkChinese(t,w,kind==="py");
+  record(res.ok, t, null, res.err);
+  reveal(res.ok, t, res.note);
+}
+function reveal(ok, typed, note){
+  state.phase="done"; state.ok=ok;
+  const {w}=deck[idx];
+  $("#card").insertAdjacentHTML("beforeend", fullAnswer(w)); bindSay($("#card"));
+  const R=$("#respond"), chosen=cfg.answer==="choice";
+  const verdict=`<div class="verdict ${ok?"ok":"no"}" id="verdict"><span id="vtxt">${ok?"✓ Correct":"✗ Not quite"}</span>
+    ${typed?`<span class="yours">You said: ${esc(typed)}</span>`:""}${typed===""?`<span class="yours">Skipped</span>`:""}${note?`<span class="yours">${esc(note)}</span>`:""}</div>`;
+  const override = chosen ? "" : `<button class="linkish" id="override">${ok?"Actually, count this as wrong":"I was right — count it"}</button>`;
+  const nextRow=`<div class="btn-row"><button class="primary" id="next">Next (Enter)</button>${override}</div>`;
+  if(chosen) R.insertAdjacentHTML("beforeend", verdict+nextRow); else R.innerHTML=verdict+nextRow;
+  $("#next").onclick=next; $("#next").focus({preventScroll:true});
+  const ov=$("#override");
+  if(ov) ov.onclick=()=>{ state.ok=!state.ok; const v=$("#verdict"); v.className="verdict "+(state.ok?"ok":"no"); $("#vtxt").textContent=state.ok?"✓ Counted as right":"✗ Counted as wrong"; ov.remove();
+    if(state.attempt){ state.attempt={...state.attempt, correct:state.ok, overridden:true, error_type:state.ok?null:(state.attempt.error_type||"self")}; logAttempt(state.attempt); } };
+}
+function next(){
+  if(state.phase!=="done") return;
+  if(state.ok) got++; else missed.push(deck[idx].w);
+  idx++; sess.n_cards=idx; sess.n_correct=got; logSession(sess);
+  if(idx>=deck.length) finish(); else showCard();
+}
+function flip(){
+  if(cfg.answer!=="flip"||state.phase!=="ask") return;
+  state.phase="flipped"; state.flipMs=Math.round(performance.now()-state.t0);
+  const h=$("#card").querySelector(".hint"); if(h) h.remove();
+  $("#card").insertAdjacentHTML("beforeend", fullAnswer(deck[idx].w)); bindSay($("#card")); $("#grade").hidden=false;
+}
+function grade(ok){
+  if(cfg.answer!=="flip"||state.phase!=="flipped") return;
+  const t0=state.t0; state.t0=performance.now()-state.flipMs;   // time to reveal, not time to self-grade
+  record(ok,null,null,ok?null:"self"); state.t0=t0;
+  state.phase="done"; state.ok=ok; $("#grade").hidden=true; next();
+}
+function finish(){
+  stopMic(); sess.ended_at=new Date().toISOString(); sess.n_cards=deck.length>idx?idx:deck.length; sess.n_correct=got; logSession(sess); flush();
+  $("#session").hidden=true; $("#result").hidden=false;
+  const total=sess.n_cards, pct=total?Math.round(got/total*100):0;
+  $("#result").innerHTML=`<span class="label">Session done</span>
+    <div class="score">${got} / ${total} <span style="font-size:1.1rem;color:var(--muted)">${pct}%</span></div>
+    ${missed.length?`<div class="row"><span class="label">To work on</span><div class="missed-list">${missed.map(w=>`<span><b>${esc(w.han)}</b>${esc(w.en)}</span>`).join("")}</div></div>`:`<div>Every word right.</div>`}
+    <div class="actions">${missed.length?`<button class="primary" id="retry">Retry the ${missed.length} missed</button>`:""}
+      <button class="ghost" id="again">Same words again</button><button class="ghost" id="back">Change settings</button></div>
+    ${me()?`<div class="sync">Saved to ${esc(me().name)}'s progress.</div>`:""}`;
+  const last=deck.slice(0,total).map(c=>c.w), missedNow=missed.slice();
+  const r=$("#retry"); if(r) r.onclick=()=>startSession(missedNow,"retry");
+  $("#again").onclick=()=>startSession(last,"again"); $("#back").onclick=resetToSetup;
+}
+function resetToSetup(){ stopMic(); $("#session").hidden=true; $("#result").hidden=true; $("#setup").hidden=false; renderSetup(); }
+
+/* ===================== speech input (browser's own, where offered) ===================== */
+const MIC='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>';
+const REC = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+let rec=null;
+function micClick(){
+  if(rec){ stopMic(); return; }
+  try{
+    rec=new REC(); rec.lang = answerKind(deck[idx].dir)==="en" ? "en-AU" : "zh-CN"; rec.interimResults=true; rec.maxAlternatives=1;
+    rec.onresult=e=>{ const t=[...e.results].map(r=>r[0].transcript).join(""); const i=$("#ans"); if(i) i.value=t.replace(/[。，！？.!?]$/,""); };
+    rec.onend=()=>{ rec=null; const m=$("#mic"); if(m) m.dataset.on="0"; };
+    rec.onerror=()=>{ rec=null; const m=$("#mic"); if(m) m.dataset.on="0"; };
+    rec.start(); $("#mic").dataset.on="1";
+  }catch(e){ rec=null; }
+}
+function stopMic(){ if(rec){ try{rec.stop();}catch(e){} rec=null; } }
+
+/* ===================== keyboard ===================== */
+$("#start").onclick=()=>startSession(selectedWords());
+$("#card").onclick=e=>{ if(!e.target.closest("[data-say]")) flip(); };
+$("#btn-got").onclick=()=>grade(true); $("#btn-miss").onclick=()=>grade(false);
+$("#quit").onclick=()=>{ if(idx>0){ deck=deck.slice(0,idx); finish(); } else { sess=null; resetToSetup(); } };
+document.addEventListener("keydown",e=>{
+  if($("#session").hidden||!state) return;
+  const inInput=e.target.tagName==="INPUT";
+  if(e.key==="Enter"){ if(state.phase==="done"){e.preventDefault();next();} else if(inInput&&cfg.answer==="type"){e.preventDefault();submitTyped(e.target.value);} else if(cfg.answer==="flip"){e.preventDefault();flip();} return; }
+  if(inInput) return;
+  if(cfg.answer==="flip"){ if(e.key===" "){e.preventDefault();flip();} else if(e.key==="1") grade(false); else if(e.key==="2") grade(true); }
+  else if(cfg.answer==="choice" && /^[1-5]$/.test(e.key)) pickChoice(+e.key-1);
+  if((e.key==="s"||e.key==="S")&&deck[idx]){ const c=deck[idx]; if(c.dir==="c2e"||state.phase!=="ask") say(c.w.han); }
+});
+
+/* ===================== analysis ===================== */
+function wordStats(attempts){
+  const by={};
+  attempts.slice().sort((a,b)=>a.shown_at<b.shown_at?-1:1).forEach(a=>{
+    const k=a.word+"|"+a.list_key; (by[k]=by[k]||{key:k, word:a.word, list:a.list_key, all:[]}).all.push(a);
+  });
+  return Object.values(by).map(s=>{
+    const last5=s.all.slice(-5), wrong5=last5.filter(a=>!a.correct).length;
+    const corr=s.all.filter(a=>a.correct), times=corr.filter(a=>a.answer_mode!=="flip"&&a.response_ms).map(a=>a.response_ms);
+    const errs={}; s.all.filter(a=>!a.correct&&a.error_type).forEach(a=>errs[a.error_type]=(errs[a.error_type]||0)+1);
+    const mix={}; s.all.filter(a=>!a.correct&&a.chosen_word).forEach(a=>mix[a.chosen_word]=(mix[a.chosen_word]||0)+1);
+    return {...s, n:s.all.length, acc:corr.length/s.all.length, acc5:(last5.length-wrong5)/last5.length, wrong5,
+            med:median(times), last:s.all[s.all.length-1].shown_at, errs, mix, w:WORD_BY[s.key]};
+  }).filter(s=>s.w);
+}
+function troubleOf(stats){ return stats.filter(s=>s.n>=2 && (s.wrong5>=2 || (s.n>=3 && s.acc5<0.6))).sort((a,b)=>(b.wrong5-a.wrong5)||(a.acc-b.acc)); }
+function weakWords(){
+  const m=me(); if(!m||!history[m.id]) return [];
+  const stats=wordStats(history[m.id].attempts);
+  const trouble=troubleOf(stats);
+  const overall=median(stats.map(s=>s.med).filter(Boolean))||0;
+  const slow=stats.filter(s=>s.med&&overall&&s.med>overall*1.6&&!trouble.includes(s));
+  const weekAgo=new Date(Date.now()-7*864e5).toISOString();
+  const stale=stats.filter(s=>s.last<weekAgo&&!trouble.includes(s)&&!slow.includes(s)).sort((a,b)=>a.acc-b.acc);
+  return [...trouble, ...slow, ...stale].slice(0,25).map(s=>({w:s.w, s}));
+}
+
+/* ===================== progress view ===================== */
+let progLearner=null;
+async function renderProgress(){
+  const body=$("#prog-body");
+  if(!auth||auth.guest||!auth.learners){ body.innerHTML=`<div class="empty">Progress is saved once this device is set up with the family code. <button class="linkish" id="setup-now">Set up now</button></div>`; $("#setup-now").onclick=()=>{auth=null;store.set("cv-auth",null);showGate("code");}; $("#prog-who-row").hidden=true; return; }
+  const meNow=me();
+  if(!progLearner) progLearner = (meNow && meNow.role==="student") ? meNow.id : (auth.learners.find(l=>l.role==="student")||auth.learners[0]).id;
+  $("#prog-who-row").hidden = !(meNow && meNow.role==="parent");
+  $("#prog-who").innerHTML = auth.learners.map(l=>`<button data-id="${l.id}" aria-pressed="${l.id===progLearner}">${esc(l.name)}</button>`).join("");
+  $("#prog-who").querySelectorAll("button").forEach(b=>b.onclick=()=>{progLearner=b.dataset.id; renderProgress();});
+  if(meNow && meNow.role==="student") progLearner=meNow.id;
+  body.innerHTML=`<div class="empty">Loading…</div>`;
+  const h=await loadHistory(progLearner);
+  const who=auth.learners.find(l=>l.id===progLearner);
+  const A=(h&&h.attempts)||[];
+  if(!A.length){ body.innerHTML=`<div class="empty">No results for ${esc(who?who.name:"")} yet. Each answer in Study is saved here automatically.</div>`; return; }
+  const scored=A.filter(a=>a.answer_mode!=="flip"), flips=A.filter(a=>a.answer_mode==="flip");
+  const days=[...new Set(A.map(a=>localDay(a.shown_at)))].sort();
+  const sessIds=new Set(A.map(a=>a.session_id).filter(Boolean));
+  const acc=scored.length? Math.round(scored.filter(a=>a.correct).length/scored.length*100):null;
+  const medAll=median(scored.filter(a=>a.correct&&a.response_ms).map(a=>a.response_ms));
+  // streak
+  let streak=0; { const set=new Set(days); let d=new Date(); if(!set.has(localDay(d))) d=new Date(Date.now()-864e5); while(set.has(localDay(d))){ streak++; d=new Date(d.getTime()-864e5); } }
+  const stats=wordStats(A), trouble=troubleOf(stats);
+  const overall=median(stats.map(s=>s.med).filter(Boolean))||0;
+  const slow=stats.filter(s=>s.med&&s.n>=2&&overall&&s.med>overall*1.6).sort((a,b)=>b.med-a.med).slice(0,10);
+  const errCount={}; A.filter(a=>!a.correct&&a.error_type).forEach(a=>errCount[a.error_type]=(errCount[a.error_type]||0)+1);
+  const mixups=[]; stats.forEach(s=>Object.entries(s.mix).forEach(([c,n])=>mixups.push({s,c,n}))); mixups.sort((a,b)=>b.n-a.n);
+  // heatmap: last 12 weeks, columns = weeks (Mon start)
+  const perDay={}; A.forEach(a=>{const d=localDay(a.shown_at); perDay[d]=(perDay[d]||0)+1;});
+  const today=new Date(); const start=new Date(today); start.setDate(start.getDate()-((today.getDay()+6)%7)-7*11);
+  let cells=""; for(let d=new Date(start); d<=today; d.setDate(d.getDate()+1)){ const k=localDay(d), n=perDay[k]||0; const l=n===0?0:n<10?1:n<30?2:3; cells+=`<i data-l="${l}" class="${k===localDay(today)?"today":""}" title="${k}: ${n} answers"></i>`; }
+  // per list
+  const listRows=DATES.slice().reverse().map(d=>{
+    const ws=WORDS.filter(w=>w.date===d), st=stats.filter(s=>s.list===d), la=scored.filter(a=>a.list_key===d);
+    const a=la.length?Math.round(la.filter(x=>x.correct).length/la.length*100):null;
+    return {d, total:ws.length, tested:st.length, a, n:la.length};
+  });
+  const meter=(p)=>p==null?`<span class="hint">–</span>`:`<div class="meter"><i style="width:${p}%;background:${p>=80?"var(--good)":p>=60?"var(--warn)":"var(--bad)"}"></i></div>`;
+  const recent=[...sessIds].map(id=>{ const as=A.filter(a=>a.session_id===id); const s=(h.sessions||[]).find(x=>x.id===id)||{};
+    return {id, t:as[0].shown_at, n:as.length, c:as.filter(a=>a.correct).length, mode:(s.settings&&s.settings.answer)||as[0].answer_mode, dir:(s.settings&&s.settings.dir)||as[0].direction,
+            mins:Math.max(1,Math.round((new Date(as[as.length-1].shown_at)-new Date(as[0].shown_at))/60000)), lists:[...new Set(as.map(a=>a.list_key))]}; })
+    .sort((a,b)=>a.t<b.t?1:-1).slice(0,12);
+  const dt=t=>new Date(t).toLocaleString("en-AU",{weekday:"short",day:"numeric",month:"short",hour:"numeric",minute:"2-digit"});
+  const errName={tones:"Tones wrong",letters:"Pinyin letters wrong",characters:"Wrong characters",meaning:"Wrong meaning",choice:"Picked wrong option",skipped:"Skipped",self:"Self-marked wrong"};
+  const dirName={c2e:"中→EN",e2c:"EN→中",h2p:"字→pinyin",mix:"Mixed"};
+  body.innerHTML=`
+    <div class="tiles">
+      <div class="tile"><b>${days.length}</b><span>days studied</span></div>
+      <div class="tile"><b>${streak}</b><span>day streak</span></div>
+      <div class="tile"><b>${sessIds.size}</b><span>sessions</span></div>
+      <div class="tile"><b>${A.length}</b><span>answers</span></div>
+      <div class="tile"><b>${acc==null?"–":acc+"%"}</b><span>accuracy (typed & pick)</span></div>
+      <div class="tile"><b>${secs(medAll)}</b><span>typical answer time</span></div>
+    </div>
+    <div class="section"><h3>Study days <span class="hint">last 12 weeks · darker = more answers</span></h3><div class="body"><div class="heat">${cells}</div></div></div>
+    <div class="section"><h3>Trouble words <span class="btn-row">${trouble.length?`<button class="small-btn" id="practise-trouble">Practise these ${trouble.length}</button>`:""}</span></h3>
+      <div class="body" style="padding:0">${trouble.length?`<div class="tablewrap"><table><thead><tr><th></th><th>Word</th><th></th><th>Last 5</th><th>Overall</th><th>Usual mistake</th></tr></thead><tbody>${
+        trouble.map(s=>{ const top=Object.entries(s.errs).sort((a,b)=>b[1]-a[1])[0]; const mx=Object.entries(s.mix).sort((a,b)=>b[1]-a[1])[0];
+          return `<tr><td class="sp">${sayBtn(s.word)}</td><td class="han">${esc(s.word)}</td><td><span style="color:var(--accent);white-space:nowrap">${esc(s.w.py)}</span><br><span class="hint">${esc(s.w.en)} · ${fmtShort(s.list)}</span></td>
+            <td class="num"><span class="pill ${s.wrong5>=3?"bad":"warn"}">${s.all.slice(-5).filter(a=>a.correct).length}/${s.all.slice(-5).length} right</span></td><td class="num">${Math.round(s.acc*100)}% of ${s.n}</td>
+            <td class="hint">${top?esc(errName[top[0]]||top[0]):"–"}${mx?`<br>mixed up with <span style="font-family:var(--han)">${esc(mx[0])}</span>`:""}</td></tr>`;}).join("")
+      }</tbody></table></div>`:`<div class="body empty">None yet. A word shows here when it's wrong at least twice in its last five tries.</div>`}</div></div>
+    <div class="section"><h3>Slow but right <span class="hint">answers taking much longer than usual</span></h3>
+      <div class="body" style="padding:0">${slow.length?`<div class="tablewrap"><table><tbody>${slow.map(s=>`<tr><td class="sp">${sayBtn(s.word)}</td><td class="han">${esc(s.word)}</td><td>${esc(s.w.en)}</td><td class="num">${secs(s.med)}</td></tr>`).join("")}</tbody></table></div>`:`<div class="body empty">Nothing stands out yet.</div>`}</div></div>
+    <div class="section"><h3>Mistake types</h3><div class="body">${Object.keys(errCount).length?Object.entries(errCount).sort((a,b)=>b[1]-a[1]).map(([k,n])=>`<div style="display:flex;justify-content:space-between;gap:10px"><span>${esc(errName[k]||k)}</span><span class="count">${n}</span></div>`).join(""):`<span class="empty">No mistakes recorded.</span>`}
+      ${errCount.tones&&errCount.letters?`<div class="hint">Tone mistakes vs letter mistakes: ${errCount.tones} vs ${errCount.letters}. ${errCount.tones>errCount.letters?"Tones are the bigger problem: listen with ▶ and copy the tone.":"Spelling the pinyin is the bigger problem."}</div>`:""}
+      ${mixups.length?`<div class="hint">Most common mix-ups: ${mixups.slice(0,5).map(m=>`<span style="font-family:var(--han)">${esc(m.s.word)}</span> → <span style="font-family:var(--han)">${esc(m.c)}</span> (${m.n})`).join(", ")}</div>`:""}</div></div>
+    <div class="section"><h3>By list <span class="hint">accuracy · words tried / words in list</span></h3><div class="body" style="padding:0"><div class="tablewrap"><table><tbody>${
+      listRows.map(r=>`<tr><td>${fmtShort(r.d)} <span class="hint">${termOf(r.d).replace("Year 9 ","")}</span></td><td style="width:40%">${meter(r.a)}</td><td class="num">${r.a==null?"–":r.a+"%"}</td><td class="num hint">${r.tested}/${r.total}</td></tr>`).join("")
+    }</tbody></table></div></div></div>
+    <div class="section"><h3>Recent sessions</h3><div class="body" style="padding:0"><div class="tablewrap"><table><tbody>${
+      recent.map(r=>`<tr><td>${dt(r.t)}</td><td class="hint">${dirName[r.dir]||r.dir} · ${r.mode==="type"?"typed":r.mode==="choice"?"pick 5":"flip"} · ${r.lists.length===1?fmtShort(r.lists[0]):r.lists.length+" lists"}</td><td class="num">${r.c}/${r.n}</td><td class="num hint">${r.mins} min</td></tr>`).join("")
+    }</tbody></table></div></div></div>
+    ${flips.length?`<div class="hint">${flips.length} of these answers were self-marked in "Just flip" mode. They count in the history but not in the accuracy or timing figures above.</div>`:""}`;
+  bindSay(body);
+  const pt=$("#practise-trouble"); if(pt) pt.onclick=()=>{ showTab("study"); $("#setup").hidden=true; startSession(trouble.map(s=>s.w),"trouble"); };
+}
+
+/* ===================== boot ===================== */
+window.addEventListener("online",()=>scheduleFlush(0));
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="hidden") flush(); });
+renderListFilter(); renderGroups();
+if(!auth) showGate("code");
+else if(!auth.guest && !auth.learnerId && !auth.guestOnce) showGate("who");
+else enterApp();
+</script>
+</body>
+</html>
