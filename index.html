@@ -316,7 +316,8 @@ let lastSyncOk=null;
 function renderSync(){
   const n=Object.keys(queue.attempts).length;
   const el=$("#sync"); if(!el) return;
-  if(!auth || auth.guest){ el.textContent = auth&&auth.guest ? "Practice mode: results are not being saved." : ""; }
+  if(!auth){ el.textContent=""; }
+  else if(!me()){ el.textContent = "Practice mode: results are not being saved."; }
   else if(n && lastSyncOk===false) el.textContent = `${n} answer${n>1?"s":""} saved on this device; will upload when the connection is back.`;
   else if(n) el.textContent = `Saving ${n} answer${n>1?"s":""}…`;
   else el.textContent = "All results saved.";
