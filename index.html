@@ -142,6 +142,16 @@ select,input[type=text],input[type=password]{font:inherit;color:var(--fg);backgr
 .gate h2{margin:0;font-size:1.2rem}
 .err{color:var(--bad);font-size:.88rem}
 .sync{font-size:.8rem;color:var(--muted)}
+.write-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.wbox{background:var(--surface);border:1px solid var(--line);border-radius:10px;touch-action:none;
+  background-image:linear-gradient(var(--line),var(--line)),linear-gradient(var(--line),var(--line));
+  background-size:100% 1px,1px 100%;background-position:center;background-repeat:no-repeat}
+.wbox.on{border:2px solid var(--accent)}
+.say.listen{width:96px;height:96px}.say.listen svg{width:40px;height:40px}
+.today{background:var(--accent-soft);border:1px solid var(--accent);border-radius:12px;padding:14px 16px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.today b{font-size:1.05rem}
+.exam{font-size:.9rem;color:var(--fg);display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
+.exam .big{font:500 1.3rem var(--mono);font-variant-numeric:tabular-nums}
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
 </style>
 </head>
@@ -187,6 +197,8 @@ select,input[type=text],input[type=password]{font:inherit;color:var(--fg);backgr
   <!-- STUDY -->
   <section id="view-study" hidden style="display:grid;gap:14px">
     <div id="setup" class="panel">
+      <div class="exam" id="exam-study"></div>
+      <div class="today"><div><b>Today's practice</b><div class="hint" id="today-hint"></div></div><button class="primary" id="today-go">Start today's 15 cards</button></div>
       <div class="row">
         <span class="label">Which words</span>
         <div class="seg" id="pick-mode">
@@ -209,6 +221,8 @@ select,input[type=text],input[type=password]{font:inherit;color:var(--fg);backgr
           <button data-v="e2c" aria-pressed="false">English → Chinese</button>
           <button data-v="mix" aria-pressed="false">Random mix</button>
           <button data-v="h2p" aria-pressed="false">Characters → Pinyin</button>
+          <button data-v="listen" aria-pressed="false">Listen → meaning</button>
+          <button data-v="write" aria-pressed="false">Write the characters</button>
         </div>
       </div>
       <div class="row" id="show-row">
@@ -219,7 +233,7 @@ select,input[type=text],input[type=password]{font:inherit;color:var(--fg);backgr
           <button data-v="both" aria-pressed="false">Both</button>
         </div>
       </div>
-      <div class="row">
+      <div class="row" id="answer-row">
         <span class="label">How to answer</span>
         <div class="seg" id="answer">
           <button data-v="type" aria-pressed="true">Type or say it</button>
@@ -259,12 +273,14 @@ select,input[type=text],input[type=password]{font:inherit;color:var(--fg);backgr
   <div class="sync" id="sync"></div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.7.2/dist/hanzi-writer.min.js"></script>
 <script src="data.js"></script>
 <script src="audio.js"></script>
 <script>
 /* ===================== config ===================== */
 const API = "https://fdcwwgkvjmiuhjxpeomz.supabase.co/rest/v1/rpc/";
 const KEY = "sb_publishable_52uD0N8HeXwdsG87e3ZrWw_094qnGiS";   // publishable key: data is only reachable through code-checked functions
+const EXAM_DATE = null;   // e.g. "2026-12-01" (YYYY-MM-DD); set when the exam date is known
 const TERM_SPAN = {"Year 9 Term 3":"21 Jul – 18 Sep", "Year 9 Term 4":"5 Oct – 9 Dec"};
 
 /* ===================== helpers ===================== */
@@ -458,7 +474,9 @@ function renderSetup(){
     $("#pick-weak").textContent = !me() ? "Choose a name (top right) so the app can see your past results." :
       ww.length ? `Your trouble words first, then words you haven't practised for a while (${ww.length} words).` : "Not enough history yet. Do a few sessions first, then this fills itself.";
   }
-  $("#show-row").hidden = cfg.dir==="e2c" || cfg.dir==="h2p";
+  $("#show-row").hidden = cfg.dir!=="c2e" && cfg.dir!=="mix";
+  $("#answer-row").hidden = cfg.dir==="write";
+  renderToday(); renderExam("#exam-study");
   const n=selectedWords().length;
   $("#pick-summary").innerHTML = n ? `<b>${n}</b> word${n>1?"s":""} selected` : "No words in that selection.";
   $("#start").disabled=!n;
@@ -488,40 +506,55 @@ function checkChinese(input,w,pinyinTest){
 
 /* ===================== session ===================== */
 let deck=[], idx=0, missed=[], got=0, state=null, sess=null;
-const answerKind=dir=> dir==="c2e"?"en": dir==="e2c"?"zh":"py";
+const answerKind=dir=> dir==="c2e"||dir==="listen"?"en": dir==="e2c"?"zh": dir==="write"?"write":"py";
+const mode=()=> deck[idx] ? deck[idx].mode : cfg.answer;
+const HAN_RE=/[㐀-鿿]/;
 function chineseFront(w){ if(cfg.show==="py") return `<div class="big-py">${esc(w.py)}</div>`; if(cfg.show==="both") return `<div class="big-han">${esc(w.han)}</div><div class="big-py">${esc(w.py)}</div>`; return `<div class="big-han">${esc(w.han)}</div>`; }
 function fullAnswer(w){ return `<div class="answer"><div class="a-han">${esc(w.han)}</div><div class="a-py">${esc(w.py)}</div><div class="a-en">${esc(w.en)}</div>${sayBtn(w.han,true)}</div>`; }
+function cardMode(dir, ans){ if(dir==="write") return "write"; return ans; }
 
-function startSession(words, label){
-  deck=(cfg.order==="shuffle"||cfg.pick==="weak"?shuffle(words.slice()):words.slice()).map(w=>({w,dir:cfg.dir==="mix"?(Math.random()<.5?"c2e":"e2c"):cfg.dir}));
+// opts.dirs: optional array of directions to rotate through (Today's practice)
+function startSession(words, label, opts={}){
+  const ws=(cfg.order==="shuffle"||label==="weak"||label==="today"||cfg.pick==="weak"?shuffle(words.slice()):words.slice());
+  const ans = opts.answer || cfg.answer;
+  deck=ws.map((w,i)=>{
+    let dir = opts.dirs ? opts.dirs[i % opts.dirs.length] : (cfg.dir==="mix"?(Math.random()<.5?"c2e":"e2c"):cfg.dir);
+    if(dir==="write" && !window.HanziWriter) dir="e2c";
+    return {w, dir, mode:cardMode(dir, ans)};
+  });
   idx=0; missed=[]; got=0;
   const m=me();
   sess = { id:uuid(), learner_id:m?m.id:null, started_at:new Date().toISOString(), ended_at:null, n_cards:0, n_correct:0,
-           settings:{pick:label||cfg.pick, lists:cfg.pick==="lists"?cfg.lists:undefined, from:cfg.pick==="range"?cfg.from:undefined, to:cfg.pick==="range"?cfg.to:undefined, dir:cfg.dir, show:cfg.show, answer:cfg.answer, size:deck.length} };
+           settings:{pick:label||cfg.pick, lists:cfg.pick==="lists"&&!label?cfg.lists:undefined, from:cfg.pick==="range"&&!label?cfg.from:undefined, to:cfg.pick==="range"&&!label?cfg.to:undefined,
+                     dir:opts.dirs?"mixed":cfg.dir, show:cfg.show, answer:ans, size:deck.length} };
   logSession(sess);
   $("#setup").hidden=true; $("#result").hidden=true; $("#session").hidden=false; showCard();
 }
 function showCard(){
-  stopMic(); audioUsed=false;
+  stopMic(); audioUsed=false; stopWriting();
   const {w,dir}=deck[idx];
   state={phase:"ask", shownAt:new Date(), t0:performance.now()};
   $("#prog-text").textContent=`${idx+1} / ${deck.length}`; $("#prog-bar").style.width=`${idx/deck.length*100}%`;
   let front="",label="";
   if(dir==="c2e"){label="What does it mean?"; front=chineseFront(w)+sayBtn(w.han,true);}
   else if(dir==="e2c"){label="How do you say it in Chinese?"; front=`<div class="big-en">${esc(w.en)}</div>`;}
+  else if(dir==="listen"){label="Listen. What does it mean?"; front=`<button class="say listen" data-say="${esc(w.han)}" aria-label="Play the word again">${ICON}</button><div class="hint">Tap to hear it again (S)</div>`;}
+  else if(dir==="write"){label="Write it in characters"; front=`<div class="big-en">${esc(w.en)}</div><div class="big-py" style="font-size:1.4rem">${esc(w.py)}</div>${sayBtn(w.han,true)}`;}
   else {label="What's the pinyin?"; front=`<div class="big-han">${esc(w.han)}</div>`;}
-  const hint = cfg.answer==="flip" ? `<div class="hint">Say your answer out loud, then tap or press Space to check</div>` : "";
+  const hint = mode()==="flip" ? `<div class="hint">Say your answer out loud, then tap or press Space to check</div>` : "";
   $("#card").innerHTML=`<div class="dir">${label}</div>${front}${hint}`; bindSay($("#card"));
   $("#grade").hidden=true; renderRespond();
+  if(dir==="listen") setTimeout(()=>{ if(deck[idx]&&deck[idx].w===w) say(w.han); }, 250);
 }
 function renderRespond(){
   const {w,dir}=deck[idx], kind=answerKind(dir), R=$("#respond");
-  if(cfg.answer==="flip"){ R.innerHTML=""; return; }
-  if(cfg.answer==="type"){
+  if(dir==="write") return renderWriting();
+  if(mode()==="flip"){ R.innerHTML=""; return; }
+  if(mode()==="type"){
     const ph = kind==="en"?"Type the English meaning": kind==="zh"?"Type pinyin (mian4 bao1 or mian bao) or characters":"Type the pinyin (tones: mian4 bao1)";
     R.innerHTML=`<div class="type-row"><input id="ans" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" class="${kind!=="en"?"zh":""}" placeholder="${ph}" aria-label="Your answer">${REC?`<button class="mic" id="mic" aria-label="Say your answer">${MIC}</button>`:""}</div>
       <div class="btn-row"><button class="primary" id="check">Check</button><button class="ghost" id="dunno">I don't know</button></div>`;
-    $("#ans").focus({preventScroll:true});
+    if(dir!=="listen") $("#ans").focus({preventScroll:true});
     $("#check").onclick=()=>submitTyped($("#ans").value);
     $("#dunno").onclick=()=>submitTyped("");
     if(REC) $("#mic").onclick=micClick;
@@ -531,6 +564,50 @@ function renderRespond(){
   R.innerHTML=`<div class="choices">${opts.map((o,i)=>`<button class="choice" data-i="${i}"><span class="k">${i+1}</span><span>${optLabel(o,kind)}</span></button>`).join("")}</div>`;
   R.querySelectorAll(".choice").forEach(b=>b.onclick=()=>pickChoice(+b.dataset.i));
 }
+
+/* --- character writing (Hanzi Writer: stroke-order data loads from the internet) --- */
+let writers=[];
+function stopWriting(){ writers.forEach(x=>{ try{ x.cancelQuiz(); }catch(e){} }); writers=[]; }
+function renderWriting(){
+  const {w}=deck[idx], R=$("#respond");
+  const chars=[...w.han].filter(c=>HAN_RE.test(c));
+  if(!window.HanziWriter){
+    R.innerHTML=`<div class="hint">Writing practice needs an internet connection. Write it on paper, then check.</div><div class="btn-row"><button class="primary" id="w-paper">Show answer</button></div>`;
+    $("#w-paper").onclick=()=>{ state.phase="flipped"; state.flipMs=Math.round(performance.now()-state.t0); $("#card").insertAdjacentHTML("beforeend", fullAnswer(w)); bindSay($("#card")); R.innerHTML=""; $("#grade").hidden=false; };
+    return;
+  }
+  const size=Math.max(110, Math.min(200, Math.floor(($("#respond").clientWidth-12*(Math.min(chars.length,4)-1))/Math.min(chars.length,4))));
+  R.innerHTML=`<div class="write-row">${chars.map((c,i)=>`<div class="wbox" id="wb${i}" style="width:${size}px;height:${size}px"></div>`).join("")}</div>
+    <div class="hint" id="w-status">Write the first character, stroke by stroke, in the highlighted box.</div>
+    <div class="btn-row"><button class="ghost" id="w-hint">Show outline</button><button class="ghost" id="w-show">Show me how</button><button class="ghost" id="w-skip">I don't know</button></div>`;
+  const cs=getComputedStyle(document.documentElement), col=v=>cs.getPropertyValue(v).trim();
+  state.write={chars, i:0, mistakes:0, hinted:false};
+  writers=chars.map((c,i)=>HanziWriter.create("wb"+i, c, {width:size,height:size,padding:10,showCharacter:false,showOutline:false,
+    strokeColor:col("--fg"), outlineColor:col("--line"), drawingColor:col("--accent"), highlightColor:col("--accent"),
+    drawingWidth:Math.round(size/9), showHintAfterMisses:3, highlightOnComplete:true, strokeFadeDuration:300,
+    charDataLoader:(ch,onLoad,onErr)=>{ fetch(`https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0.1/${encodeURIComponent(ch)}.json`).then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); }).then(onLoad).catch(onErr); }}));
+  const startQuiz=i=>{
+    document.querySelectorAll(".wbox").forEach((b,j)=>b.classList.toggle("on",j===i));
+    $("#w-status").textContent = chars.length>1 ? `Character ${i+1} of ${chars.length}. Write it stroke by stroke.` : "Write it stroke by stroke.";
+    writers[i].quiz({ onComplete:({totalMistakes})=>{ state.write.mistakes+=totalMistakes; state.write.i=i+1;
+      if(i+1<chars.length) startQuiz(i+1); else finishWriting(); } });
+  };
+  state.write.start=startQuiz; startQuiz(0);
+  $("#w-hint").onclick=()=>{ state.write.hinted=true; writers[state.write.i]&&writers[state.write.i].showOutline(); };
+  $("#w-show").onclick=()=>{ const i=state.write.i; if(!writers[i]) return; state.write.hinted=true; try{writers[i].cancelQuiz();}catch(e){}
+    writers[i].animateCharacter({onComplete:()=>{ writers[i].hideCharacter(); startQuiz(i); }}); };
+  $("#w-skip").onclick=()=>{ if(state.phase!=="ask") return; writers.forEach(x=>{ try{x.cancelQuiz();}catch(e){} try{x.showCharacter();}catch(e){} }); writers=[]; record(false,"skipped",null,"writing"); reveal(false,"",null); };
+}
+function finishWriting(){
+  if(state.phase!=="ask") return;
+  const {chars,mistakes,hinted}=state.write;
+  const ok = !hinted && mistakes <= chars.length;   // about one slip per character allowed
+  const note = `${mistakes} stroke mistake${mistakes===1?"":"s"}${hinted?", used a hint":""}`;
+  record(ok, note, null, ok?null:"writing");
+  document.querySelectorAll(".wbox").forEach(b=>b.classList.remove("on"));
+  reveal(ok, null, note);
+}
+
 function optLabel(o,kind){ if(kind==="en") return esc(o.en); if(kind==="py") return `<span class="c-py" style="font-size:1.1rem">${esc(o.py)}</span>`; return `<span class="c-han">${esc(o.han)}</span> <span class="c-py">${esc(o.py)}</span>`; }
 function choicesFor(w,kind){
   const key=o=> kind==="en"?enCandidates(o.en).join("|"): kind==="py"?o.py:o.han;
@@ -542,13 +619,13 @@ function choicesFor(w,kind){
 }
 function record(correct, answerText, chosen, err){
   const {w,dir}=deck[idx], m=me();
-  const a={ id:uuid(), learner_id:m?m.id:null, session_id:sess.id, word:w.han, list_key:w.date, direction:dir, answer_mode:cfg.answer,
+  const a={ id:uuid(), learner_id:m?m.id:null, session_id:sess.id, word:w.han, list_key:w.date, direction:dir, answer_mode:mode(),
             shown_at:state.shownAt.toISOString(), response_ms:Math.round(performance.now()-state.t0), correct, overridden:false,
-            answer_text:answerText??null, chosen_word:chosen??null, error_type:correct?null:(err||null), audio_played:audioUsed };
+            answer_text:answerText??null, chosen_word:chosen??null, error_type:correct?null:(err||null), audio_played:audioUsed||dir==="listen" };
   state.attempt=a; logAttempt(a);
 }
 function pickChoice(i){
-  if(state.phase!=="ask") return;
+  if(state.phase!=="ask"||mode()!=="choice") return;
   const {w}=deck[idx], o=state.opts[i], ok=o.han===w.han;
   $("#respond").querySelectorAll(".choice").forEach((b,j)=>{ b.disabled=true; if(state.opts[j].han===w.han) b.classList.add("right"); else if(j===i) b.classList.add("wrong"); });
   record(ok, null, o.han, ok?null:"choice");
@@ -565,12 +642,13 @@ function reveal(ok, typed, note){
   state.phase="done"; state.ok=ok;
   const {w}=deck[idx];
   $("#card").insertAdjacentHTML("beforeend", fullAnswer(w)); bindSay($("#card"));
-  const R=$("#respond"), chosen=cfg.answer==="choice";
+  const R=$("#respond"), keep=mode()==="choice"||mode()==="write";
   const verdict=`<div class="verdict ${ok?"ok":"no"}" id="verdict"><span id="vtxt">${ok?"✓ Correct":"✗ Not quite"}</span>
     ${typed?`<span class="yours">You said: ${esc(typed)}</span>`:""}${typed===""?`<span class="yours">Skipped</span>`:""}${note?`<span class="yours">${esc(note)}</span>`:""}</div>`;
-  const override = chosen ? "" : `<button class="linkish" id="override">${ok?"Actually, count this as wrong":"I was right — count it"}</button>`;
+  const override = mode()==="choice" ? "" : `<button class="linkish" id="override">${ok?"Actually, count this as wrong":"I was right — count it"}</button>`;
   const nextRow=`<div class="btn-row"><button class="primary" id="next">Next (Enter)</button>${override}</div>`;
-  if(chosen) R.insertAdjacentHTML("beforeend", verdict+nextRow); else R.innerHTML=verdict+nextRow;
+  if(keep){ const b=R.querySelector(".btn-row"); if(mode()==="write"&&b) b.remove(); const s=$("#w-status"); if(s) s.remove(); R.insertAdjacentHTML("beforeend", verdict+nextRow); }
+  else R.innerHTML=verdict+nextRow;
   $("#next").onclick=next; $("#next").focus({preventScroll:true});
   const ov=$("#override");
   if(ov) ov.onclick=()=>{ state.ok=!state.ok; const v=$("#verdict"); v.className="verdict "+(state.ok?"ok":"no"); $("#vtxt").textContent=state.ok?"✓ Counted as right":"✗ Counted as wrong"; ov.remove();
@@ -583,19 +661,19 @@ function next(){
   if(idx>=deck.length) finish(); else showCard();
 }
 function flip(){
-  if(cfg.answer!=="flip"||state.phase!=="ask") return;
+  if(mode()!=="flip"||state.phase!=="ask") return;
   state.phase="flipped"; state.flipMs=Math.round(performance.now()-state.t0);
   const h=$("#card").querySelector(".hint"); if(h) h.remove();
   $("#card").insertAdjacentHTML("beforeend", fullAnswer(deck[idx].w)); bindSay($("#card")); $("#grade").hidden=false;
 }
 function grade(ok){
-  if(cfg.answer!=="flip"||state.phase!=="flipped") return;
+  if(state.phase!=="flipped") return;
   const t0=state.t0; state.t0=performance.now()-state.flipMs;   // time to reveal, not time to self-grade
   record(ok,null,null,ok?null:"self"); state.t0=t0;
   state.phase="done"; state.ok=ok; $("#grade").hidden=true; next();
 }
 function finish(){
-  stopMic(); sess.ended_at=new Date().toISOString(); sess.n_cards=deck.length>idx?idx:deck.length; sess.n_correct=got; logSession(sess); flush();
+  stopMic(); stopWriting(); sess.ended_at=new Date().toISOString(); sess.n_cards=deck.length>idx?idx:deck.length; sess.n_correct=got; logSession(sess); flush();
   $("#session").hidden=true; $("#result").hidden=false;
   const total=sess.n_cards, pct=total?Math.round(got/total*100):0;
   $("#result").innerHTML=`<span class="label">Session done</span>
@@ -604,11 +682,51 @@ function finish(){
     <div class="actions">${missed.length?`<button class="primary" id="retry">Retry the ${missed.length} missed</button>`:""}
       <button class="ghost" id="again">Same words again</button><button class="ghost" id="back">Change settings</button></div>
     ${me()?`<div class="sync">Saved to ${esc(me().name)}'s progress.</div>`:""}`;
-  const last=deck.slice(0,total).map(c=>c.w), missedNow=missed.slice();
-  const r=$("#retry"); if(r) r.onclick=()=>startSession(missedNow,"retry");
-  $("#again").onclick=()=>startSession(last,"again"); $("#back").onclick=resetToSetup;
+  const lastDeck=deck.slice(0,total), missedNow=missed.slice(), label=sess.settings.pick;
+  const sameDirs = label==="today" ? {dirs:lastDeck.map(c=>c.dir)} : {};
+  const r=$("#retry"); if(r) r.onclick=()=>startSession(missedNow,"retry", label==="today"?{dirs:TODAY_DIRS()}:{});
+  $("#again").onclick=()=>startSession(lastDeck.map(c=>c.w),"again", sameDirs); $("#back").onclick=resetToSetup;
+  if(label==="today") renderToday();
 }
-function resetToSetup(){ stopMic(); $("#session").hidden=true; $("#result").hidden=true; $("#setup").hidden=false; renderSetup(); }
+function resetToSetup(){ stopMic(); stopWriting(); $("#session").hidden=true; $("#result").hidden=true; $("#setup").hidden=false; renderSetup(); }
+
+/* ===================== today's practice ===================== */
+const TODAY_SIZE=15;
+const TODAY_DIRS=()=> shuffle(["c2e","listen","e2c","write","c2e","listen","e2c","h2p"].filter(d=>d!=="write"||window.HanziWriter));
+const INTERVALS=[0,1,2,4,7,14,30];   // days before a word is due again, by how many times in a row it's been right
+function todaysWords(){
+  const m=me(), h=m&&history[m.id];
+  if(!h||!h.attempts.length) return shuffle(WORDS.slice()).slice(0,TODAY_SIZE);
+  const stats=wordStats(h.attempts.filter(a=>a.answer_mode!=="flip"));
+  const trouble=troubleOf(stats).slice(0,6);
+  const now=Date.now();
+  const due=stats.filter(s=>!trouble.includes(s)).map(s=>{
+    let streak=0; for(let i=s.all.length-1;i>=0&&s.all[i].correct;i--) streak++;
+    const days=(now-new Date(s.last).getTime())/864e5, iv=INTERVALS[Math.min(streak,INTERVALS.length-1)];
+    return {s, over: iv===0 ? 99 : days/iv};
+  }).filter(x=>x.over>=1).sort((a,b)=>b.over-a.over).map(x=>x.s);
+  const seen=new Set(stats.map(s=>s.key));
+  const fresh=shuffle(WORDS.filter(w=>!seen.has(w.han+"|"+w.date)));
+  const out=[], keys=new Set();
+  const add=w=>{ const k=w.han+"|"+w.date; if(!keys.has(k)&&out.length<TODAY_SIZE){ keys.add(k); out.push(w); } };
+  trouble.forEach(s=>add(s.w)); due.forEach(s=>add(s.w)); fresh.forEach(add);
+  if(out.length<TODAY_SIZE) shuffle(WORDS.slice()).forEach(add);
+  return out;
+}
+function doneToday(){
+  const m=me(), h=m&&history[m.id]; if(!h) return 0;
+  const today=localDay(Date.now());
+  const ids=new Set((h.sessions||[]).filter(s=>s.settings&&s.settings.pick==="today"&&localDay(s.started_at)===today).map(s=>s.id));
+  Object.values(queue.sessions).filter(s=>s.settings&&s.settings.pick==="today"&&localDay(s.started_at)===today).forEach(s=>ids.add(s.id));
+  if(sess&&sess.settings&&sess.settings.pick==="today"&&localDay(sess.started_at)===today) ids.add(sess.id);
+  return ids.size;
+}
+function renderToday(){
+  const el=$("#today-hint"); if(!el) return;
+  const n=doneToday();
+  el.textContent = !me() ? `${TODAY_SIZE} mixed cards: meaning, listening, pinyin and writing.` :
+    n ? `Done today ✓ (${n} round${n>1?"s":""}). Another round is fine.` : `${TODAY_SIZE} cards picked for you: trouble words first, then words due for review, then new ones. Mixed question types.`;
+}
 
 /* ===================== speech input (browser's own, where offered) ===================== */
 const MIC='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>';
@@ -628,18 +746,36 @@ function stopMic(){ if(rec){ try{rec.stop();}catch(e){} rec=null; } }
 
 /* ===================== keyboard ===================== */
 $("#start").onclick=()=>startSession(selectedWords());
+$("#today-go").onclick=()=>startSession(todaysWords(),"today",{dirs:TODAY_DIRS(), answer: cfg.answer==="flip"?"type":cfg.answer});
 $("#card").onclick=e=>{ if(!e.target.closest("[data-say]")) flip(); };
 $("#btn-got").onclick=()=>grade(true); $("#btn-miss").onclick=()=>grade(false);
-$("#quit").onclick=()=>{ if(idx>0){ deck=deck.slice(0,idx); finish(); } else { sess=null; resetToSetup(); } };
+$("#quit").onclick=()=>{ if(idx>0){ deck=deck.slice(0,idx); finish(); } else { stopWriting(); sess=null; resetToSetup(); } };
 document.addEventListener("keydown",e=>{
-  if($("#session").hidden||!state) return;
-  const inInput=e.target.tagName==="INPUT";
-  if(e.key==="Enter"){ if(state.phase==="done"){e.preventDefault();next();} else if(inInput&&cfg.answer==="type"){e.preventDefault();submitTyped(e.target.value);} else if(cfg.answer==="flip"){e.preventDefault();flip();} return; }
+  if($("#session").hidden||!state||!deck[idx]) return;
+  const inInput=e.target.tagName==="INPUT", m=mode();
+  if(e.key==="Enter"){ if(state.phase==="done"){e.preventDefault();next();} else if(inInput&&m==="type"){e.preventDefault();submitTyped(e.target.value);} else if(m==="flip"){e.preventDefault();flip();} return; }
   if(inInput) return;
-  if(cfg.answer==="flip"){ if(e.key===" "){e.preventDefault();flip();} else if(e.key==="1") grade(false); else if(e.key==="2") grade(true); }
-  else if(cfg.answer==="choice" && /^[1-5]$/.test(e.key)) pickChoice(+e.key-1);
-  if((e.key==="s"||e.key==="S")&&deck[idx]){ const c=deck[idx]; if(c.dir==="c2e"||state.phase!=="ask") say(c.w.han); }
+  if(m==="flip"||state.phase==="flipped"){ if(e.key===" "){e.preventDefault();flip();} else if(e.key==="1") grade(false); else if(e.key==="2") grade(true); }
+  else if(m==="choice" && /^[1-5]$/.test(e.key)) pickChoice(+e.key-1);
+  if((e.key==="s"||e.key==="S")){ const c=deck[idx]; if(c.dir==="c2e"||c.dir==="listen"||c.dir==="write"||state.phase!=="ask") say(c.w.han); }
 });
+
+/* ===================== exam countdown + readiness ===================== */
+function readyKeys(attempts){
+  const by={}; attempts.filter(a=>a.answer_mode!=="flip").slice().sort((a,b)=>a.shown_at<b.shown_at?-1:1).forEach(a=>{ (by[a.word+"|"+a.list_key]=by[a.word+"|"+a.list_key]||[]).push(a.correct); });
+  return new Set(Object.entries(by).filter(([k,v])=>v.length>=2&&v[v.length-1]&&v[v.length-2]).map(([k])=>k));
+}
+function examDays(){ if(!EXAM_DATE) return null; const [y,m,d]=EXAM_DATE.split("-").map(Number); const t=new Date(y,m-1,d), n=new Date(); n.setHours(0,0,0,0); return Math.round((t-n)/864e5); }
+function renderExam(sel, learnerId){
+  const el=$(sel); if(!el) return;
+  const id=learnerId||(me()&&me().id), h=id&&history[id];
+  const days=examDays();
+  const dateTxt = EXAM_DATE ? new Date(EXAM_DATE+"T00:00").toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short"}) : null;
+  const cd = days==null ? `<span>Exam date: <b>to be added</b></span>` : days>0 ? `<span><span class="big">${days}</span> day${days===1?"":"s"} to the exam (${dateTxt})</span>` : days===0 ? `<span><b>Exam today</b> (${dateTxt}). Good luck!</span>` : `<span>Exam was ${dateTxt}</span>`;
+  let rd="";
+  if(h){ const r=readyKeys(h.attempts), n=WORDS.filter(w=>r.has(w.han+"|"+w.date)).length; rd=`<span>Ready: <span class="big">${Math.round(n/WORDS.length*100)}%</span> (${n} of ${WORDS.length} words right on the last 2 tries)</span>`; }
+  el.innerHTML=cd+rd;
+}
 
 /* ===================== analysis ===================== */
 function wordStats(attempts){
@@ -701,10 +837,11 @@ async function renderProgress(){
   const today=new Date(); const start=new Date(today); start.setDate(start.getDate()-((today.getDay()+6)%7)-7*11);
   let cells=""; for(let d=new Date(start); d<=today; d.setDate(d.getDate()+1)){ const k=localDay(d), n=perDay[k]||0; const l=n===0?0:n<10?1:n<30?2:3; cells+=`<i data-l="${l}" class="${k===localDay(today)?"today":""}" title="${k}: ${n} answers"></i>`; }
   // per list
+  const readySet=readyKeys(A);
   const listRows=DATES.slice().reverse().map(d=>{
     const ws=WORDS.filter(w=>w.date===d), st=stats.filter(s=>s.list===d), la=scored.filter(a=>a.list_key===d);
     const a=la.length?Math.round(la.filter(x=>x.correct).length/la.length*100):null;
-    return {d, total:ws.length, tested:st.length, a, n:la.length};
+    return {d, total:ws.length, tested:st.length, ready:ws.filter(w=>readySet.has(w.han+"|"+w.date)).length, a, n:la.length};
   });
   const meter=(p)=>p==null?`<span class="hint">–</span>`:`<div class="meter"><i style="width:${p}%;background:${p>=80?"var(--good)":p>=60?"var(--warn)":"var(--bad)"}"></i></div>`;
   const recent=[...sessIds].map(id=>{ const as=A.filter(a=>a.session_id===id); const s=(h.sessions||[]).find(x=>x.id===id)||{};
@@ -712,15 +849,16 @@ async function renderProgress(){
             mins:Math.max(1,Math.round((new Date(as[as.length-1].shown_at)-new Date(as[0].shown_at))/60000)), lists:[...new Set(as.map(a=>a.list_key))]}; })
     .sort((a,b)=>a.t<b.t?1:-1).slice(0,12);
   const dt=t=>new Date(t).toLocaleString("en-AU",{weekday:"short",day:"numeric",month:"short",hour:"numeric",minute:"2-digit"});
-  const errName={tones:"Tones wrong",letters:"Pinyin letters wrong",characters:"Wrong characters",meaning:"Wrong meaning",choice:"Picked wrong option",skipped:"Skipped",self:"Self-marked wrong"};
-  const dirName={c2e:"中→EN",e2c:"EN→中",h2p:"字→pinyin",mix:"Mixed"};
+  const errName={writing:"Character writing mistakes",tones:"Tones wrong",letters:"Pinyin letters wrong",characters:"Wrong characters",meaning:"Wrong meaning",choice:"Picked wrong option",skipped:"Skipped",self:"Self-marked wrong"};
+  const dirName={c2e:"中→EN",e2c:"EN→中",h2p:"字→pinyin",listen:"Listening",write:"Writing",mix:"Mixed",mixed:"Mixed"};
   body.innerHTML=`
+    <div class="panel" style="padding:12px 16px"><div class="exam" id="exam-prog"></div></div>
     <div class="tiles">
       <div class="tile"><b>${days.length}</b><span>days studied</span></div>
       <div class="tile"><b>${streak}</b><span>day streak</span></div>
       <div class="tile"><b>${sessIds.size}</b><span>sessions</span></div>
       <div class="tile"><b>${A.length}</b><span>answers</span></div>
-      <div class="tile"><b>${acc==null?"–":acc+"%"}</b><span>accuracy (typed & pick)</span></div>
+      <div class="tile"><b>${acc==null?"–":acc+"%"}</b><span>accuracy (not counting flip)</span></div>
       <div class="tile"><b>${secs(medAll)}</b><span>typical answer time</span></div>
     </div>
     <div class="section"><h3>Study days <span class="hint">last 12 weeks · darker = more answers</span></h3><div class="body"><div class="heat-wrap"><div class="heat-days" aria-hidden="true"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div><div class="heat">${cells}</div></div></div></div>
@@ -736,14 +874,19 @@ async function renderProgress(){
     <div class="section"><h3>Mistake types</h3><div class="body">${Object.keys(errCount).length?Object.entries(errCount).sort((a,b)=>b[1]-a[1]).map(([k,n])=>`<div style="display:flex;justify-content:space-between;gap:10px"><span>${esc(errName[k]||k)}</span><span class="count">${n}</span></div>`).join(""):`<span class="empty">No mistakes recorded.</span>`}
       ${errCount.tones&&errCount.letters?`<div class="hint">Tone mistakes vs letter mistakes: ${errCount.tones} vs ${errCount.letters}. ${errCount.tones>errCount.letters?"Tones are the bigger problem: listen with ▶ and copy the tone.":"Spelling the pinyin is the bigger problem."}</div>`:""}
       ${mixups.length?`<div class="hint">Most common mix-ups: ${mixups.slice(0,5).map(m=>`<span style="font-family:var(--han)">${esc(m.s.word)}</span> → <span style="font-family:var(--han)">${esc(m.c)}</span> (${m.n})`).join(", ")}</div>`:""}</div></div>
-    <div class="section"><h3>By list <span class="hint">accuracy · words tried / words in list</span></h3><div class="body" style="padding:0"><div class="tablewrap"><table><tbody>${
-      listRows.map(r=>`<tr><td>${fmtShort(r.d)} <span class="hint">${termOf(r.d).replace("Year 9 ","")}</span></td><td style="width:40%">${meter(r.a)}</td><td class="num">${r.a==null?"–":r.a+"%"}</td><td class="num hint">${r.tested}/${r.total}</td></tr>`).join("")
+    <div class="section"><h3>By type of question</h3><div class="body" style="padding:0"><div class="tablewrap"><table><tbody>${
+      ["c2e","e2c","h2p","listen","write"].map(d=>{ const x=scored.filter(a=>a.direction===d); if(!x.length) return `<tr><td>${dirName[d]}</td><td colspan="3" class="hint">not tried yet</td></tr>`;
+        const p=Math.round(x.filter(a=>a.correct).length/x.length*100), t=median(x.filter(a=>a.correct&&a.response_ms).map(a=>a.response_ms));
+        return `<tr><td>${dirName[d]}</td><td style="width:40%">${meter(p)}</td><td class="num">${p}%</td><td class="num hint">${x.length} · ${secs(t)}</td></tr>`; }).join("")
+    }</tbody></table></div></div></div>
+    <div class="section"><h3>By list <span class="hint">accuracy · ready / words in list</span></h3><div class="body" style="padding:0"><div class="tablewrap"><table><tbody>${
+      listRows.map(r=>`<tr><td>${fmtShort(r.d)} <span class="hint">${termOf(r.d).replace("Year 9 ","")}</span></td><td style="width:40%">${meter(r.a)}</td><td class="num">${r.a==null?"–":r.a+"%"}</td><td class="num hint">${r.ready}/${r.total}</td></tr>`).join("")
     }</tbody></table></div></div></div>
     <div class="section"><h3>Recent sessions</h3><div class="body" style="padding:0"><div class="tablewrap"><table><tbody>${
       recent.map(r=>`<tr><td>${dt(r.t)}</td><td class="hint">${dirName[r.dir]||r.dir} · ${r.mode==="type"?"typed":r.mode==="choice"?"pick 5":"flip"} · ${r.lists.length===1?fmtShort(r.lists[0]):r.lists.length+" lists"}</td><td class="num">${r.c}/${r.n}</td><td class="num hint">${r.mins} min</td></tr>`).join("")
     }</tbody></table></div></div></div>
     ${flips.length?`<div class="hint">${flips.length} of these answers were self-marked in "Just flip" mode. They count in the history but not in the accuracy or timing figures above.</div>`:""}`;
-  bindSay(body);
+  bindSay(body); renderExam("#exam-prog", progLearner);
   const pt=$("#practise-trouble"); if(pt) pt.onclick=()=>{ showTab("study"); $("#setup").hidden=true; startSession(trouble.map(s=>s.w),"trouble"); };
 }
 
