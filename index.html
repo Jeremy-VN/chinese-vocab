@@ -280,7 +280,8 @@ select,input[type=text],input[type=password]{font:inherit;color:var(--fg);backgr
 /* ===================== config ===================== */
 const API = "https://fdcwwgkvjmiuhjxpeomz.supabase.co/rest/v1/rpc/";
 const KEY = "sb_publishable_52uD0N8HeXwdsG87e3ZrWw_094qnGiS";   // publishable key: data is only reachable through code-checked functions
-const EXAM_DATE = null;   // e.g. "2026-12-01" (YYYY-MM-DD); set when the exam date is known
+const EXAM_DATE = "2026-12-01";   // YYYY-MM-DD: Year 9 Chinese exam (Terms 3 and 4)
+const EXAM_TIME = "1:30–3:30 pm";
 const TERM_SPAN = {"Year 9 Term 3":"21 Jul – 18 Sep", "Year 9 Term 4":"5 Oct – 9 Dec"};
 
 /* ===================== helpers ===================== */
@@ -771,7 +772,7 @@ function renderExam(sel, learnerId){
   const id=learnerId||(me()&&me().id), h=id&&history[id];
   const days=examDays();
   const dateTxt = EXAM_DATE ? new Date(EXAM_DATE+"T00:00").toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short"}) : null;
-  const cd = days==null ? `<span>Exam date: <b>to be added</b></span>` : days>0 ? `<span><span class="big">${days}</span> day${days===1?"":"s"} to the exam (${dateTxt})</span>` : days===0 ? `<span><b>Exam today</b> (${dateTxt}). Good luck!</span>` : `<span>Exam was ${dateTxt}</span>`;
+  const cd = days==null ? `<span>Exam date: <b>to be added</b></span>` : days>0 ? `<span><span class="big">${days}</span> day${days===1?"":"s"} to the exam (${dateTxt}, ${EXAM_TIME})</span>` : days===0 ? `<span><b>Exam today</b>, ${EXAM_TIME}. Good luck!</span>` : `<span>Exam was ${dateTxt}</span>`;
   let rd="";
   if(h){ const r=readyKeys(h.attempts), n=WORDS.filter(w=>r.has(w.han+"|"+w.date)).length; rd=`<span>Ready: <span class="big">${Math.round(n/WORDS.length*100)}%</span> (${n} of ${WORDS.length} words right on the last 2 tries)</span>`; }
   el.innerHTML=cd+rd;
