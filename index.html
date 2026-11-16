@@ -346,10 +346,10 @@ td.sp{width:1%;padding-right:4px}
       <div class="card exam" id="exam-home"></div>
       <button class="today-btn" id="today-go"><span class="big">今</span><span><b>Today's practice</b><span class="sub" id="today-hint"></span></span><span class="go" aria-hidden="true">→</span></button>
       <div class="sec-head"><h2>Or pick what to practise</h2>
-        <div class="seg" id="browse"><button data-v="topics" aria-pressed="true">Topics</button><button data-v="lessons" aria-pressed="false">Lessons</button></div></div>
+        <div class="seg" id="browse"><button data-v="lessons" aria-pressed="true">Lessons</button><button data-v="topics" aria-pressed="false">Topics</button></div></div>
       <div class="quick" id="quick"></div>
-      <div class="tiles" id="pick-topics"></div>
-      <div id="pick-lessons" style="display:grid;gap:16px" hidden></div>
+      <div id="pick-lessons" style="display:grid;gap:16px"></div>
+      <div class="tiles" id="pick-topics" hidden></div>
     </section>
 
     <!-- WORDS -->
@@ -643,8 +643,9 @@ function enterApp(){
 }
 
 /* ===================== settings ===================== */
-const cfg = Object.assign({dir:"c2e",show:"han",answer:"type",order:"shuffle",browse:"topics",wordsBy:"lessons"}, store.get("cv-cfg",{}));
+const cfg = Object.assign({dir:"c2e",show:"han",answer:"type",order:"shuffle",browse:"lessons",wordsBy:"lessons"}, store.get("cv-cfg",{}));
 if(!["c2e","e2c","h2p","listen","write","mix"].includes(cfg.dir)) cfg.dir="c2e";
+if(!cfg.lessonsFirst){ cfg.browse="lessons"; cfg.lessonsFirst=1; try{localStorage.setItem("cv-cfg",JSON.stringify(cfg))}catch(e){} }   // 17/11: lessons became the default view
 function saveCfg(){ store.set("cv-cfg",cfg); }
 
 /* ===================== selection (home) ===================== */
