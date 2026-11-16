@@ -280,9 +280,12 @@ select,input[type=text],input[type=password]{font:inherit;color:var(--fg);backgr
 /* ===================== config ===================== */
 const API = "https://fdcwwgkvjmiuhjxpeomz.supabase.co/rest/v1/rpc/";
 const KEY = "sb_publishable_52uD0N8HeXwdsG87e3ZrWw_094qnGiS";   // publishable key: data is only reachable through code-checked functions
-const EXAM_DATE = "2026-12-01";   // YYYY-MM-DD: Year 9 Chinese exam (Terms 3 and 4)
+const EXAM_DATE = "2026-12-01";   // YYYY-MM-DD: Year 9 Chinese exam (Semester 2 vocab)
+const EXAM_SEM = "Semester 2";
 const EXAM_TIME = "1:30–3:30 pm";
-const TERM_SPAN = {"Year 9 Term 3":"21 Jul – 18 Sep", "Year 9 Term 4":"5 Oct – 9 Dec"};
+const TERM_SPAN = {"Semester 1":"CME1 L8–13", "Semester 2":"CME1 L15, CME2 L1–3 · exam"};
+// old list keys (before the textbook reorder) → new keys
+const LEGACY = {"T3-8":"1-8.1","T3-7":"1-8.2","T3-6":"1-9.1","T3-5":"1-9.2","T3-4":"1-10.1","T3-3":"1-10.2","T3-2":"1-13.1","T3-1":"1-13.2"};
 
 /* ===================== helpers ===================== */
 const $ = s=>document.querySelector(s);
@@ -290,13 +293,14 @@ const esc = s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"
 const store = {get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
                set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const uuid = ()=> (crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return (c==='x'?r:(r&3|8)).toString(16);}));
-const WORDS = window.WORDS, NOTES = window.NOTES||{}, AUDIO = window.AUDIO||{};
+const WORDS = window.WORDS, NOTES = window.NOTES||{}, AUDIO = window.AUDIO||{}, LISTS = window.LISTS||{};
 const DATES = [...new Set(WORDS.map(w=>w.date))];
 const MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const undated = d=>/^T\d-\d+$/.test(d);
-const fmt = d=>{ if(undated(d)){const [t,n]=d.slice(1).split("-");return `Term ${t} · List ${n}`;} const [y,m,dd]=d.split("-");return `${+dd} ${MON[+m-1]} ${y}`;};
-const fmtShort = d=>{ if(undated(d)){const [t,n]=d.slice(1).split("-");return `T${t} #${n}`;} const [y,m,dd]=d.split("-");return `${+dd} ${MON[+m-1]}`;};
-const termOf = d=> undated(d) ? `Year 9 Term ${d[1]}` : (d < "2026-09-19" ? "Year 9 Term 3" : "Year 9 Term 4");
+const undated = d=>!/^\d{4}-\d\d-\d\d$/.test(d);
+const LI = d=>LISTS[d]||{sem:2,lesson:"",short:d};
+const fmt = d=>{ const L=LI(d); if(undated(d)) return L.lesson||d; const [y,m,dd]=d.split("-"); return `${+dd} ${MON[+m-1]} ${y}`+(L.lesson?` · ${L.lesson}`:""); };
+const fmtShort = d=>{ if(undated(d)) return LI(d).short||d; const [y,m,dd]=d.split("-");return `${+dd} ${MON[+m-1]}`;};
+const termOf = d=> "Semester "+LI(d).sem;
 const TERMS = [...new Set(DATES.map(termOf))];
 const WORD_BY = Object.fromEntries(WORDS.map(w=>[w.han+"|"+w.date,w]));
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
@@ -307,6 +311,7 @@ const localDay = t=>{ const d=new Date(t); return `${d.getFullYear()}-${String(d
 /* ===================== identity + sync ===================== */
 let auth = store.get("cv-auth", null);      // {code, learners:[{id,name,role}], learnerId} | {guest:true}
 let queue = store.get("cv-queue", {sessions:{}, attempts:{}});
+Object.values(queue.attempts||{}).forEach(a=>{ if(LEGACY[a.list_key]) a.list_key=LEGACY[a.list_key]; });
 let history = store.get("cv-history", {});  // learnerId -> {sessions, attempts, fetchedAt}
 const me = ()=> auth && !auth.guest ? (auth.learners||[]).find(l=>l.id===auth.learnerId) : null;
 
@@ -352,6 +357,7 @@ async function loadHistory(learnerId){
     if(h){ h.fetchedAt=Date.now(); history[learnerId]=h; store.set("cv-history",history); }
   }catch(e){}
   const h = history[learnerId] || {sessions:[],attempts:[]};
+  h.attempts.forEach(a=>{ if(LEGACY[a.list_key]) a.list_key=LEGACY[a.list_key]; });
   // fold in anything still waiting to upload
   const ids=new Set(h.attempts.map(a=>a.id));
   Object.values(queue.attempts).filter(a=>a.learner_id===learnerId).forEach(a=>{ if(!ids.has(a.id)) h.attempts.push(a); else h.attempts[h.attempts.findIndex(x=>x.id===a.id)]=a; });
@@ -433,7 +439,7 @@ function renderGroups(){
   $("#groups").innerHTML = ds.map(d=>{
     const ws=WORDS.filter(w=>w.date===d);
     return `<div class="group">
-      <div class="group-head"><div><h2>${fmt(d)}</h2><span class="count">${termOf(d)} (${TERM_SPAN[termOf(d)]||""})${undated(d)?" · undated":""} · ${ws.length} words</span></div>
+      <div class="group-head"><div><h2>${fmt(d)}</h2><span class="count">${termOf(d)} (${TERM_SPAN[termOf(d)]})${undated(d)&&!LI(d).extra?" · textbook list":""}${LI(d).extra?" · not on Van's handout":""} · ${ws.length} words</span></div>
         <button class="small-btn" data-study="${d}">Study this list</button></div>
       ${NOTES[d]?`<div style="padding:8px 16px;border-bottom:1px solid var(--line)" class="hint">${esc(NOTES[d])}</div>`:""}
       <div class="tablewrap"><table>${ws.map(w=>`<tr><td class="sp">${sayBtn(w.han)}</td><td class="han">${esc(w.han)}</td><td class="py">${esc(w.py)}</td><td>${esc(w.en)}</td></tr>`).join("")}</table></div>
@@ -443,8 +449,8 @@ function renderGroups(){
 }
 
 /* ===================== study setup ===================== */
-const cfg = Object.assign({pick:"lists",lists:[DATES[DATES.length-1]],from:DATES[0],to:DATES[DATES.length-1],dir:"c2e",show:"han",answer:"type",order:"shuffle"}, store.get("cv-cfg",{}));
-cfg.lists=(cfg.lists||[]).filter(d=>DATES.includes(d));
+const cfg = Object.assign({pick:"lists",lists:[DATES.filter(d=>!undated(d)).pop()],from:DATES[0],to:DATES[DATES.length-1],dir:"c2e",show:"han",answer:"type",order:"shuffle"}, store.get("cv-cfg",{}));
+cfg.lists=(cfg.lists||[]).map(d=>LEGACY[d]||d).filter(d=>DATES.includes(d));
 if(!DATES.includes(cfg.from)) cfg.from=DATES[0];
 if(!DATES.includes(cfg.to)) cfg.to=DATES[DATES.length-1];
 function saveCfg(){ store.set("cv-cfg",cfg); }
@@ -774,7 +780,7 @@ function renderExam(sel, learnerId){
   const dateTxt = EXAM_DATE ? new Date(EXAM_DATE+"T00:00").toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short"}) : null;
   const cd = days==null ? `<span>Exam date: <b>to be added</b></span>` : days>0 ? `<span><span class="big">${days}</span> day${days===1?"":"s"} to the exam (${dateTxt}, ${EXAM_TIME})</span>` : days===0 ? `<span><b>Exam today</b>, ${EXAM_TIME}. Good luck!</span>` : `<span>Exam was ${dateTxt}</span>`;
   let rd="";
-  if(h){ const r=readyKeys(h.attempts), n=WORDS.filter(w=>r.has(w.han+"|"+w.date)).length; rd=`<span>Ready: <span class="big">${Math.round(n/WORDS.length*100)}%</span> (${n} of ${WORDS.length} words right on the last 2 tries)</span>`; }
+  if(h){ const r=readyKeys(h.attempts), EW=WORDS.filter(w=>termOf(w.date)===EXAM_SEM), n=EW.filter(w=>r.has(w.han+"|"+w.date)).length; rd=`<span>Exam-ready: <span class="big">${Math.round(n/EW.length*100)}%</span> (${n} of ${EW.length} ${EXAM_SEM} words right on the last 2 tries)</span>`; }
   el.innerHTML=cd+rd;
 }
 
