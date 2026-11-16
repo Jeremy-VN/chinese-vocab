@@ -1,0 +1,1133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#f6f3ee" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14161c" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Chinese">
+<title>Chinese Words</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#f6f3ee; --surface:#fffdf9; --surface-2:#f0ece4; --line:#e4ddd1; --fg:#1d1b18; --muted:#6b645a;
+  --ink:#24346b; --ink-soft:#e4e8f4; --on-ink:#ffffff;
+  --seal:#c23a2b; --seal-soft:#f8e4df;
+  --good:#1b7a50; --good-soft:#dff0e6; --bad:#b8352a; --bad-soft:#f8e2de; --warn:#946400; --warn-soft:#f5ead0;
+  --shadow:0 1px 2px rgba(40,30,10,.06),0 4px 14px rgba(40,30,10,.06);
+  --han:"Noto Serif SC","Songti SC","STSong","SimSun",serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:16px; --nav-h:0px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#14161c; --surface:#1c1f27; --surface-2:#232733; --line:#2f3440; --fg:#ece9e3; --muted:#a29c92;
+  --ink:#a9b8f2; --ink-soft:#252d48; --on-ink:#121522;
+  --seal:#e46a5c; --seal-soft:#3a201d;
+  --good:#5fcf98; --good-soft:#173226; --bad:#f08a7d; --bad-soft:#3c2220; --warn:#e5b65a; --warn-soft:#382e17;
+  --shadow:0 1px 2px rgba(0,0,0,.3);
+  color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit}
+button,summary{cursor:pointer}
+:focus-visible{outline:2.5px solid var(--ink);outline-offset:2px}
+.app{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:calc(14px + env(safe-area-inset-top,0px)) calc(110px + env(safe-area-inset-bottom,0px))}
+main{display:grid;gap:20px}
+main > section{display:grid;gap:18px;min-width:0}
+
+/* ---------- header + nav ---------- */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.seal{width:40px;height:40px;border-radius:10px;background:var(--seal);color:#fff;display:grid;place-items:center;font:700 1.35rem var(--han);flex:none;box-shadow:inset 0 0 0 2px rgba(255,255,255,.18)}
+.brand b{display:block;font-weight:800;font-size:1.05rem;line-height:1.1}
+.brand small{display:block;color:var(--muted);font-size:.8rem;line-height:1.2}
+.who{border:1px solid var(--line);background:var(--surface);font-weight:600;font-size:.88rem;padding:7px 12px;border-radius:999px;display:flex;gap:7px;align-items:center;white-space:nowrap}
+.who .dot{width:8px;height:8px;border-radius:50%;background:var(--good)}
+.who .dot.off{background:var(--warn)}
+.who .dot.guest{background:var(--muted)}
+.nav{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px}
+.nav button{border:0;background:none;color:var(--muted);font-weight:700;font-size:.9rem;padding:7px 14px;border-radius:999px;display:flex;align-items:center;gap:7px}
+.nav button svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nav button[aria-selected="true"]{background:var(--ink);color:var(--on-ink)}
+@media (max-width:640px){
+  :root{--nav-h:64px}
+  .nav{position:fixed;left:0;right:0;bottom:0;z-index:20;border-radius:0;border:0;border-top:1px solid var(--line);background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    padding:6px max(10px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left,0px));justify-content:space-around}
+  .nav button{flex:1;flex-direction:column;gap:2px;font-size:.72rem;padding:6px 4px;border-radius:12px}
+  .nav button[aria-selected="true"]{background:var(--ink-soft);color:var(--ink)}
+  .nav button svg{width:22px;height:22px}
+}
+body.focus .nav,body.focus .top,body.focus .tray{display:none!important}
+body.focus .app{padding-bottom:calc(40px + env(safe-area-inset-bottom,0px))}
+
+/* ---------- shared bits ---------- */
+h1,h2,h3{margin:0;line-height:1.2;text-wrap:balance}
+h1{font-size:1.65rem;font-weight:800;letter-spacing:-.01em}
+h2{font-size:1.1rem;font-weight:800}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.primary{background:var(--ink);color:var(--on-ink);border:0;font-weight:700;font-size:1.02rem;padding:13px 22px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.primary:disabled{opacity:.45;cursor:not-allowed}
+.primary.block{width:100%}
+.ghost{background:var(--surface);border:1px solid var(--line);font-weight:600;font-size:.95rem;padding:11px 16px;border-radius:12px}
+.textbtn{background:none;border:0;color:var(--muted);font-weight:600;font-size:.88rem;text-decoration:underline;text-underline-offset:3px;padding:4px 0}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:12px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{border:0;background:none;font-weight:700;font-size:.9rem;color:var(--muted);padding:8px 14px;border-radius:9px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.label{font-size:.75rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.say{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;width:36px;height:36px;display:inline-grid;place-items:center;flex:none;padding:0}
+.say svg{width:17px;height:17px;fill:currentColor}
+.say.lg{width:48px;height:48px}.say.lg svg{width:22px;height:22px}
+.say:active{transform:scale(.94)}
+.bar{height:8px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ink);border-radius:99px;width:0;transition:width .3s}
+.empty{color:var(--muted);font-size:.95rem;padding:6px 0}
+.hint{font-size:.85rem;color:var(--muted)}
+.sync{font-size:.8rem;color:var(--muted);text-align:center;margin-top:22px}
+
+/* ---------- home ---------- */
+.hello{display:flex;justify-content:space-between;align-items:end;gap:10px;flex-wrap:wrap}
+.hello h1 .zh{font-family:var(--han);font-weight:700;margin-right:6px}
+.exam{padding:16px 18px;display:grid;gap:10px}
+.exam-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.exam-days{font-weight:800;font-size:1.05rem}
+.exam-days .n{font-size:2rem;font-variant-numeric:tabular-nums;color:var(--seal);margin-right:4px;line-height:1}
+.exam-ready{font-size:.9rem;color:var(--muted)}
+.exam-ready b{color:var(--fg);font-variant-numeric:tabular-nums}
+.today-btn{width:100%;text-align:left;border:0;border-radius:20px;background:var(--ink);color:var(--on-ink);padding:20px;display:flex;align-items:center;gap:16px;box-shadow:var(--shadow)}
+.today-btn .big{font:700 2.2rem var(--han);width:58px;height:58px;border-radius:16px;background:rgba(255,255,255,.14);display:grid;place-items:center;flex:none}
+.today-btn b{display:block;font-size:1.2rem;font-weight:800}
+.today-btn span.sub{display:block;font-size:.9rem;opacity:.85;margin-top:2px}
+.today-btn .go{margin-left:auto;font-size:1.6rem;opacity:.9;flex:none}
+.today-btn.done{background:var(--good-soft);color:var(--good)}
+.today-btn.done .big{background:var(--good);color:#fff}
+.sec-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:6px}
+.quick{display:flex;gap:8px;flex-wrap:wrap}
+.qchip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:700;font-size:.9rem;display:flex;gap:8px;align-items:center}
+.qchip .n{color:var(--muted);font-weight:600}
+.qchip[aria-pressed="true"],.tile[aria-pressed="true"],.lchip[aria-pressed="true"]{background:var(--ink-soft);border-color:var(--ink);color:var(--ink)}
+.qchip[aria-pressed="true"] .n{color:var(--ink)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.tile{position:relative;text-align:left;border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r);padding:12px 34px 12px 12px;display:grid;grid-template-columns:auto 1fr;column-gap:12px;row-gap:3px;align-items:center;box-shadow:var(--shadow);min-width:0}
+.tile .ic{grid-row:span 3}
+.tile .mini{grid-column:2}
+.tile .ic{font:700 1.5rem var(--han);width:44px;height:44px;border-radius:12px;background:var(--surface-2);display:grid;place-items:center;color:var(--fg)}
+.tile[aria-pressed="true"] .ic{background:var(--ink);color:var(--on-ink)}
+.tile b{font-weight:800;font-size:.98rem;line-height:1.2}
+.tile .meta{font-size:.8rem;color:var(--muted)}
+.tile[aria-pressed="true"] .meta{color:var(--ink)}
+.tile .mini{height:5px;background:var(--surface-2);border-radius:9px;overflow:hidden}
+.tile .mini i{display:block;height:100%;background:var(--good)}
+.tick{position:absolute;top:50%;margin-top:-11px;right:10px;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:.75rem;color:transparent}
+[aria-pressed="true"] > .tick{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.sem{display:grid;gap:10px}
+.sem-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:4px}
+.lesson{padding:14px 16px;display:grid;gap:10px}
+.lesson-title{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.lesson-title .zh{font:700 1.15rem var(--han)}
+.lesson-title .en{color:var(--muted);font-size:.88rem}
+.lesson-title .code{font-size:.75rem;font-weight:700;color:var(--muted);letter-spacing:.05em}
+.lchips{display:flex;flex-wrap:wrap;gap:8px}
+.lchip{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 12px;font-weight:700;font-size:.88rem;text-align:left;display:grid;gap:0;line-height:1.25}
+.lchip small{font-weight:500;color:var(--muted);font-size:.78rem}
+.lchip[aria-pressed="true"] small{color:var(--ink)}
+.lchip.extra{border-style:dashed}
+.tray{position:fixed;left:0;right:0;bottom:var(--nav-h);z-index:19;padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));pointer-events:none}
+@media (max-width:640px){.tray{bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px))}}
+@media (min-width:641px){.tray{padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}}
+.tray-in{pointer-events:auto;max-width:728px;margin:0 auto;background:var(--fg);color:var(--bg);border-radius:18px;padding:10px 10px 10px 18px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.tray-in .t{flex:1;min-width:0;font-weight:600;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tray-in .t b{font-size:1.1rem}
+.tray-in .clear{background:none;border:0;color:inherit;opacity:.7;font-weight:600;font-size:.88rem;padding:8px}
+.tray-in .primary{background:var(--bg);color:var(--fg);padding:11px 18px}
+
+/* ---------- sheet (practice settings) ---------- */
+dialog.sheet{border:0;padding:0;background:var(--surface);color:var(--fg);border-radius:22px;width:min(560px,calc(100vw - 24px));max-height:calc(100dvh - 24px);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog.sheet::backdrop{background:rgba(10,12,20,.45)}
+@media (max-width:640px){dialog.sheet{margin:auto auto 0;width:100vw;max-width:100vw;border-radius:22px 22px 0 0;max-height:92dvh}}
+.sheet-in{padding:20px 20px calc(20px + env(safe-area-inset-bottom,0px));display:grid;gap:16px;overflow:auto}
+.sheet-head{display:flex;justify-content:space-between;align-items:start;gap:10px}
+.sheet-head .x{border:0;background:var(--surface-2);width:36px;height:36px;border-radius:50%;font-size:1rem;flex:none}
+.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.qopt{border:1.5px solid var(--line);background:var(--surface);border-radius:14px;padding:11px 12px;text-align:left;display:flex;gap:10px;align-items:center;min-width:0}
+.qopt .g{font:700 1.05rem var(--han);width:40px;height:40px;border-radius:10px;background:var(--surface-2);display:grid;place-items:center;flex:none;white-space:nowrap;letter-spacing:-.04em}
+.qopt .g svg{width:20px;height:20px;fill:currentColor}
+.qopt b{display:block;font-size:.92rem;font-weight:800;line-height:1.2}
+.qopt small{display:block;font-size:.76rem;color:var(--muted);line-height:1.25}
+.qopt[aria-pressed="true"]{border-color:var(--ink);background:var(--ink-soft);color:var(--ink)}
+.qopt[aria-pressed="true"] .g{background:var(--ink);color:var(--on-ink)}
+.qopt[aria-pressed="true"] small{color:var(--ink)}
+details.more summary{font-weight:700;font-size:.9rem;color:var(--muted);list-style:none;display:flex;gap:6px;align-items:center}
+details.more summary::-webkit-details-marker{display:none}
+details.more summary::before{content:"▸";transition:transform .15s}
+details.more[open] summary::before{transform:rotate(90deg)}
+details.more .in{display:grid;gap:12px;padding-top:12px}
+
+/* ---------- session ---------- */
+.sbar{display:flex;align-items:center;gap:12px}
+.sbar .x{border:0;background:var(--surface-2);width:40px;height:40px;border-radius:50%;font-size:1.05rem;flex:none}
+.sbar .bar{flex:1;height:10px}
+.sbar .count{font-weight:700;font-variant-numeric:tabular-nums;color:var(--muted);font-size:.9rem;min-width:52px;text-align:right}
+.qcard{background:var(--surface);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);min-height:min(48vh,340px);padding:28px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;user-select:none}
+.qcard.flippable{cursor:pointer}
+.qcard .dir{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.big-han{font-family:var(--han);font-size:clamp(3.2rem,15vw,6rem);line-height:1.1;font-weight:500}
+.big-py{font-size:clamp(1.6rem,6.5vw,2.4rem);color:var(--ink);font-weight:600}
+.big-en{font-size:clamp(1.5rem,6vw,2.2rem);font-weight:800;text-wrap:balance;line-height:1.25}
+.answer{border-top:1.5px dashed var(--line);padding-top:16px;margin-top:4px;width:100%;display:flex;flex-direction:column;gap:4px;align-items:center}
+.answer .a-han{font-family:var(--han);font-size:2.5rem;line-height:1.2}
+.answer .a-py{color:var(--ink);font-size:1.3rem;font-weight:600}
+.answer .a-en{font-size:1.15rem;font-weight:700}
+.answer .say{margin-top:8px}
+.respond{display:grid;gap:12px}
+.type-row{display:flex;gap:8px}
+.type-row input{flex:1;min-width:0;font:600 1.15rem var(--body);color:var(--fg);background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:13px 16px}
+.type-row input:focus{border-color:var(--ink);outline:none}
+.type-row input.zh{font-family:var(--body)}
+.mic{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;width:54px;display:grid;place-items:center;flex:none}
+.mic svg{width:22px;height:22px;fill:currentColor}
+.mic[data-on="1"]{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.two{display:grid;grid-template-columns:1fr auto;gap:10px}
+.choices{display:grid;gap:8px}
+.choice{display:flex;align-items:center;gap:12px;text-align:left;border:1.5px solid var(--line);background:var(--surface);font-weight:600;font-size:1.05rem;padding:12px 14px;border-radius:14px;min-height:54px}
+.choice .k{font-size:.78rem;font-weight:700;color:var(--muted);background:var(--surface-2);border-radius:8px;width:26px;height:26px;display:grid;place-items:center;flex:none}
+.choice .c-han{font-family:var(--han);font-size:1.35rem;font-weight:500}
+.choice .c-py{color:var(--ink);font-size:.95rem}
+.choice.right{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+.choice.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.choice:disabled{cursor:default}
+.choice:disabled:not(.right):not(.wrong){opacity:.55}
+.verdict{border-radius:14px;padding:12px 16px;font-weight:800;font-size:1.05rem;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}
+.verdict.ok{background:var(--good-soft);color:var(--good)}
+.verdict.no{background:var(--bad-soft);color:var(--bad)}
+.verdict .yours{font-weight:500;font-size:.92rem;color:var(--fg)}
+.grade{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grade button{border:0;font-weight:800;font-size:1.05rem;padding:16px;border-radius:14px}
+.miss{background:var(--bad-soft);color:var(--bad)}
+.got{background:var(--good-soft);color:var(--good)}
+.write-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.wbox{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;touch-action:none;
+  background-image:linear-gradient(var(--line),var(--line)),linear-gradient(var(--line),var(--line));
+  background-size:100% 1px,1px 100%;background-position:center;background-repeat:no-repeat}
+.wbox.on{border:2.5px solid var(--ink)}
+.say.listen{width:110px;height:110px;background:var(--ink);color:var(--on-ink);border:0}.say.listen svg{width:46px;height:46px}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btns > *{flex:1 1 auto}
+
+/* ---------- result ---------- */
+.result{padding:26px 20px;display:grid;gap:18px;justify-items:center;text-align:center}
+.ring{--p:0;width:150px;height:150px;border-radius:50%;background:conic-gradient(var(--good) calc(var(--p)*1%),var(--surface-2) 0);display:grid;place-items:center}
+.ring > div{width:122px;height:122px;border-radius:50%;background:var(--surface);display:grid;place-items:center;align-content:center}
+.ring b{font-size:2.2rem;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.ring span{font-size:.85rem;color:var(--muted)}
+.missed{width:100%;display:grid;gap:6px;text-align:left}
+.mrow{display:flex;gap:12px;align-items:center;background:var(--bad-soft);border-radius:12px;padding:8px 12px}
+.mrow .h{font:500 1.35rem var(--han)}
+.mrow .p{color:var(--ink);font-size:.9rem}
+.mrow .e{font-size:.9rem;margin-left:auto;text-align:right}
+.result .btns{width:100%}
+
+/* ---------- words ---------- */
+.search{display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:0 14px}
+.search svg{width:19px;height:19px;stroke:var(--muted);fill:none;stroke-width:2;flex:none}
+.search input{flex:1;min-width:0;border:0;background:none;font:500 1rem var(--body);color:var(--fg);padding:13px 0;outline:none}
+.group{overflow:hidden}
+.group > summary{list-style:none;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.group > summary::-webkit-details-marker{display:none}
+.group > summary .ic{font:700 1.2rem var(--han);width:38px;height:38px;border-radius:10px;background:var(--surface-2);display:grid;place-items:center;flex:none}
+.group > summary .t{flex:1;min-width:0}
+.group > summary .t b{display:block;font-weight:800}
+.group > summary .t small{display:block;color:var(--muted);font-size:.82rem}
+.group > summary .chev{color:var(--muted);transition:transform .15s}
+.group[open] > summary .chev{transform:rotate(90deg)}
+.group .note{padding:0 16px 10px;font-size:.85rem;color:var(--muted)}
+.wlist{border-top:1px solid var(--line)}
+.w{display:grid;grid-template-columns:auto auto 1fr;gap:4px 14px;align-items:center;padding:10px 16px;border-top:1px solid var(--line)}
+.w:first-child{border-top:0}
+.w .h{font:500 1.45rem var(--han);white-space:nowrap}
+.w .pe{min-width:0}
+.w .pe .p{color:var(--ink);font-weight:600;font-size:.95rem}
+.w .pe .e{font-size:.92rem}
+.w .pe .src{font-size:.75rem;color:var(--muted)}
+.gfoot{padding:10px 16px 14px;border-top:1px solid var(--line)}
+.subhead{padding:10px 16px 4px;font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;font-weight:800;color:var(--muted);border-top:1px solid var(--line);background:var(--surface-2)}
+
+/* ---------- progress ---------- */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (min-width:641px){.stats{grid-template-columns:repeat(6,1fr)}}
+.stat{padding:12px;display:grid;gap:0}
+.stat b{font-size:1.45rem;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.2}
+.stat span{font-size:.75rem;color:var(--muted);line-height:1.25}
+.panel{overflow:hidden}
+.panel > h3{padding:14px 16px 10px;font-size:1rem;font-weight:800;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.panel > h3 .hint{font-weight:500}
+.panel .body{padding:0 16px 16px;display:grid;gap:10px}
+.small-btn{border:0;background:var(--ink);color:var(--on-ink);font-weight:700;font-size:.85rem;padding:7px 12px;border-radius:10px}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+td,th{padding:9px 16px;border-top:1px solid var(--line);vertical-align:middle;text-align:left}
+th{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:800}
+td.han{font-family:var(--han);font-size:1.35rem;white-space:nowrap;width:1%}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+td.sp{width:1%;padding-right:4px}
+.meter{height:8px;background:var(--surface-2);border-radius:4px;overflow:hidden;min-width:70px}
+.meter i{display:block;height:100%}
+.pill{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 8px;border-radius:999px}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.heat-wrap{display:flex;gap:6px;align-items:flex-start;min-width:0}
+.heat-days{display:grid;grid-template-rows:repeat(7,14px);gap:3px;font-size:.65rem;line-height:14px;color:var(--muted);font-weight:700;flex:none}
+.heat{display:grid;min-width:0;grid-auto-flow:column;grid-template-rows:repeat(7,14px);gap:3px;overflow-x:auto;padding-bottom:4px}
+.heat i{width:14px;height:14px;border-radius:4px;background:var(--surface-2)}
+.heat i[data-l="1"]{background:color-mix(in srgb,var(--good) 35%,var(--surface-2))}
+.heat i[data-l="2"]{background:color-mix(in srgb,var(--good) 65%,var(--surface-2))}
+.heat i[data-l="3"]{background:var(--good)}
+.heat i.today{outline:1.5px solid var(--fg);outline-offset:1px}
+
+/* ---------- gate ---------- */
+.gate{padding:26px 22px;display:grid;gap:14px;max-width:440px;margin:6vh auto 0;text-align:center;justify-items:center}
+.gate .seal{width:64px;height:64px;font-size:2.2rem;border-radius:16px}
+.gate form{display:grid;gap:10px;width:100%}
+.gate input{font:600 1.1rem var(--body);color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:13px 14px;text-align:center;width:100%}
+.gate .people{display:grid;gap:10px;width:100%}
+.err{color:var(--bad);font-size:.9rem}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top" id="top">
+    <div class="brand"><span class="seal" aria-hidden="true">词</span><div><b>Chinese words</b><small>Year 9 · Shu laoshi</small></div></div>
+    <div class="row" style="flex-wrap:nowrap">
+      <nav class="nav" id="nav" role="tablist">
+    <button role="tab" data-tab="home" aria-selected="true"><svg viewBox="0 0 24 24"><path d="M5 4h14v16l-7-4-7 4z"/></svg>Practise</button>
+    <button role="tab" data-tab="words" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/></svg>Words</button>
+    <button role="tab" data-tab="prog" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Progress</button>
+  </nav>
+      <button class="who" id="who" hidden><span class="dot" id="who-dot"></span><span id="who-name"></span></button>
+    </div>
+  </header>
+
+  <main>
+    <!-- GATE -->
+    <section id="gate" hidden>
+      <div class="gate card" id="gate-code">
+        <span class="seal" aria-hidden="true">词</span>
+        <h1>Chinese words</h1>
+        <div class="muted">Enter the family code once. This device remembers it.</div>
+        <form id="code-form">
+          <input type="password" id="code" autocomplete="off" placeholder="Family code" aria-label="Family code">
+          <button class="primary block" type="submit">Continue</button>
+        </form>
+        <div class="err" id="code-err" hidden></div>
+        <button class="textbtn" id="skip-save" type="button">Just practise, without saving results</button>
+      </div>
+      <div class="gate card" id="gate-who" hidden>
+        <span class="seal" aria-hidden="true">谁</span>
+        <h1>Who's practising?</h1>
+        <div class="people" id="who-buttons"></div>
+        <div class="hint">Results are saved under this name. Switch any time from the top right.</div>
+      </div>
+    </section>
+
+    <!-- HOME -->
+    <section id="view-home" hidden>
+      <div class="hello"><h1 id="hello"></h1></div>
+      <div class="card exam" id="exam-home"></div>
+      <button class="today-btn" id="today-go"><span class="big">今</span><span><b>Today's practice</b><span class="sub" id="today-hint"></span></span><span class="go" aria-hidden="true">→</span></button>
+      <div class="sec-head"><h2>Or pick what to practise</h2>
+        <div class="seg" id="browse"><button data-v="topics" aria-pressed="true">Topics</button><button data-v="lessons" aria-pressed="false">Lessons</button></div></div>
+      <div class="quick" id="quick"></div>
+      <div class="tiles" id="pick-topics"></div>
+      <div id="pick-lessons" style="display:grid;gap:16px" hidden></div>
+    </section>
+
+    <!-- WORDS -->
+    <section id="view-words" hidden>
+      <div class="hello"><h1>All words</h1></div>
+      <label class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search: 汉字, pinyin or English" autocomplete="off" spellcheck="false" aria-label="Search words"></label>
+      <div class="seg" id="words-by"><button data-v="lessons" aria-pressed="true">By lesson</button><button data-v="topics" aria-pressed="false">By topic</button></div>
+      <div id="groups" style="display:grid;gap:10px"></div>
+    </section>
+
+    <!-- PROGRESS -->
+    <section id="view-prog" hidden>
+      <div class="hello"><h1>Progress</h1><div class="seg" id="prog-who" hidden></div></div>
+      <div id="prog-body" style="display:grid;gap:14px"></div>
+    </section>
+
+    <!-- SESSION -->
+    <section id="view-session" hidden>
+      <div class="sbar"><button class="x" id="quit" aria-label="End session">✕</button><div class="bar"><i id="prog-bar"></i></div><span class="count" id="prog-text"></span></div>
+      <div class="qcard" id="card" tabindex="0" aria-live="polite"></div>
+      <div class="respond" id="respond"></div>
+      <div class="grade" id="grade" hidden><button class="miss" id="btn-miss">✗ Didn't know</button><button class="got" id="btn-got">✓ Knew it</button></div>
+    </section>
+
+    <!-- RESULT -->
+    <section id="view-result" hidden><div class="card result" id="result"></div></section>
+  </main>
+  <div class="sync" id="sync"></div>
+</div>
+
+<div class="tray" id="tray" hidden><div class="tray-in"><span class="t" id="tray-text"></span><button class="clear" id="tray-clear">Clear</button><button class="primary" id="tray-go">Practise →</button></div></div>
+
+<dialog class="sheet" id="sheet">
+  <div class="sheet-in">
+    <div class="sheet-head"><div><h2 id="sheet-title"></h2><div class="hint" id="sheet-sub"></div></div><button class="x" id="sheet-x" aria-label="Close">✕</button></div>
+    <div style="display:grid;gap:8px"><span class="label">Question type</span><div class="qgrid" id="dir"></div></div>
+    <div style="display:grid;gap:8px" id="answer-row"><span class="label">How to answer</span>
+      <div class="seg" id="answer"><button data-v="type">Type or say</button><button data-v="choice">Pick from 5</button><button data-v="flip">Flip cards</button></div></div>
+    <details class="more" id="more"><summary>More options</summary><div class="in">
+      <div style="display:grid;gap:6px" id="show-row"><span class="label">Show the Chinese as</span><div class="seg" id="show"><button data-v="han">Characters</button><button data-v="py">Pinyin</button><button data-v="both">Both</button></div></div>
+      <div style="display:grid;gap:6px"><span class="label">Order</span><div class="seg" id="order"><button data-v="shuffle">Shuffled</button><button data-v="list">As listed</button></div></div>
+    </div></details>
+    <button class="primary block" id="start">Start</button>
+  </div>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.7.2/dist/hanzi-writer.min.js"></script>
+<script src="data.js"></script>
+<script src="audio.js"></script>
+<script>
+/* ===================== config ===================== */
+const API = "https://fdcwwgkvjmiuhjxpeomz.supabase.co/rest/v1/rpc/";
+const KEY = "sb_publishable_52uD0N8HeXwdsG87e3ZrWw_094qnGiS";   // publishable key: data is only reachable through code-checked functions
+const EXAM_DATE = "2026-12-01";   // YYYY-MM-DD: Year 9 Chinese exam (Semester 2 vocab)
+const EXAM_SEM = "Semester 2";
+const EXAM_TIME = "1:30–3:30 pm";
+const TERM_SPAN = {"Semester 1":"CME1 L8–13", "Semester 2":"CME1 L15, CME2 L1–3 · exam"};
+// old list keys (before the textbook reorder) → new keys
+const LEGACY = {"T3-8":"1-8.1","T3-7":"1-8.2","T3-6":"1-9.1","T3-5":"1-9.2","T3-4":"1-10.1","T3-3":"1-10.2","T3-2":"1-13.1","T3-1":"1-13.2"};
+
+/* ===================== helpers ===================== */
+const $ = s=>document.querySelector(s);
+const esc = s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const store = {get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+               set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const uuid = ()=> (crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return (c==='x'?r:(r&3|8)).toString(16);}));
+const WORDS = window.WORDS, NOTES = window.NOTES||{}, AUDIO = window.AUDIO||{}, LISTS = window.LISTS||{};
+const DATES = [...new Set(WORDS.map(w=>w.date))];
+const MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const undated = d=>!/^\d{4}-\d\d-\d\d$/.test(d);
+const LI = d=>LISTS[d]||{sem:2,lesson:"",short:d};
+const fmt = d=>{ const L=LI(d); if(undated(d)) return L.lesson||d; const [y,m,dd]=d.split("-"); return `${+dd} ${MON[+m-1]} ${y}`+(L.lesson?` · ${L.lesson}`:""); };
+const fmtShort = d=>{ if(undated(d)) return LI(d).short||d; const [y,m,dd]=d.split("-");return `${+dd} ${MON[+m-1]}`;};
+const termOf = d=> "Semester "+LI(d).sem;
+const TERMS = [...new Set(DATES.map(termOf))];
+const WORD_BY = Object.fromEntries(WORDS.map(w=>[w.han+"|"+w.date,w]));
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+const median = a=>{ if(!a.length) return null; const s=[...a].sort((x,y)=>x-y), m=s.length>>1; return s.length%2?s[m]:(s[m-1]+s[m])/2; };
+const secs = ms=> ms==null ? "–" : (ms/1000).toFixed(1)+" s";
+const localDay = t=>{ const d=new Date(t); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
+
+/* ===================== identity + sync ===================== */
+let auth = store.get("cv-auth", null);      // {code, learners:[{id,name,role}], learnerId} | {guest:true}
+let queue = store.get("cv-queue", {sessions:{}, attempts:{}});
+Object.values(queue.attempts||{}).forEach(a=>{ if(LEGACY[a.list_key]) a.list_key=LEGACY[a.list_key]; });
+let history = store.get("cv-history", {});  // learnerId -> {sessions, attempts, fetchedAt}
+const me = ()=> auth && !auth.guest ? (auth.learners||[]).find(l=>l.id===auth.learnerId) : null;
+
+async function rpc(fn, body){
+  const r = await fetch(API+fn,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify(body)});
+  if(!r.ok) throw new Error(fn+" "+r.status);
+  return r.json();
+}
+function saveQueue(){ store.set("cv-queue", queue); renderSync(); }
+let flushing=false, flushTimer=null;
+function scheduleFlush(ms=1500){ clearTimeout(flushTimer); flushTimer=setTimeout(flush, ms); }
+async function flush(){
+  if(flushing || !auth || auth.guest) return;
+  const ss=Object.values(queue.sessions), as=Object.values(queue.attempts);
+  if(!ss.length && !as.length) return renderSync();
+  flushing=true;
+  try{
+    await rpc("vocab_log",{p_code:auth.code,p_sessions:ss,p_attempts:as});
+    ss.forEach(s=>{ if(queue.sessions[s.id]===s) delete queue.sessions[s.id]; });
+    as.forEach(a=>{ if(queue.attempts[a.id]===a) delete queue.attempts[a.id]; });
+    saveQueue(); lastSyncOk=true;
+  }catch(e){ lastSyncOk=false; renderSync(); setTimeout(()=>scheduleFlush(0), 30000); }
+  finally{ flushing=false; }
+}
+let lastSyncOk=null;
+function renderSync(){
+  const n=Object.keys(queue.attempts).length;
+  const el=$("#sync"); if(!el) return;
+  if(!auth){ el.textContent=""; }
+  else if(!me()){ el.textContent = "Practice mode: results are not being saved."; }
+  else if(n && lastSyncOk===false) el.textContent = `${n} answer${n>1?"s":""} saved on this device; will upload when the connection is back.`;
+  else if(n) el.textContent = `Saving ${n} answer${n>1?"s":""}…`;
+  else el.textContent = "All results saved.";
+  const dot=$("#who-dot"); if(dot) dot.className = "dot"+(n && lastSyncOk===false ? " off":"")+(me()?"":" guest");
+}
+function logSession(s){ if(!me()) return; queue.sessions[s.id]={...s}; saveQueue(); scheduleFlush(); }
+function logAttempt(a){ if(!me()) return; queue.attempts[a.id]={...a}; saveQueue(); scheduleFlush();
+  const h=history[a.learner_id]; if(h){ const i=h.attempts.findIndex(x=>x.id===a.id); if(i>=0) h.attempts[i]=a; else h.attempts.push(a); } }
+async function loadHistory(learnerId){
+  if(!auth || auth.guest) return null;
+  try{
+    const h = await rpc("vocab_history",{p_code:auth.code,p_learner:learnerId});
+    if(h){ h.fetchedAt=Date.now(); history[learnerId]=h; store.set("cv-history",history); }
+  }catch(e){}
+  const h = history[learnerId] || {sessions:[],attempts:[]};
+  h.attempts.forEach(a=>{ if(LEGACY[a.list_key]) a.list_key=LEGACY[a.list_key]; });
+  // fold in anything still waiting to upload
+  const ids=new Set(h.attempts.map(a=>a.id));
+  Object.values(queue.attempts).filter(a=>a.learner_id===learnerId).forEach(a=>{ if(!ids.has(a.id)) h.attempts.push(a); else h.attempts[h.attempts.findIndex(x=>x.id===a.id)]=a; });
+  history[learnerId]=h; return h;
+}
+
+/* ===================== pronunciation ===================== */
+const ICON='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
+let curAudio=null, audioUsed=false;
+function say(text){
+  audioUsed=true;
+  const src=AUDIO[text];
+  if(src){ try{ if(curAudio) curAudio.pause(); curAudio=new Audio(src); curAudio.play().catch(()=>ttsSay(text)); return; }catch(e){} }
+  ttsSay(text);
+}
+function ttsSay(text){
+  const tts=window.speechSynthesis; if(!tts) return;
+  tts.cancel(); const u=new SpeechSynthesisUtterance(text.replace(/[….]+/g,"，")); u.lang="zh-CN"; u.rate=.8; tts.speak(u);
+}
+const sayBtn=(han,lg)=>`<button class="say${lg?' lg':''}" data-say="${esc(han)}" aria-label="Say ${esc(han)}">${ICON}</button>`;
+function bindSay(root){ root.querySelectorAll("[data-say]").forEach(b=>b.onclick=e=>{e.stopPropagation();say(b.dataset.say);}); }
+
+/* ===================== answer checking ===================== */
+const strip=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+function pyParts(s){ s=s.toLowerCase().replace(/u:/g,"v").normalize("NFD"); const T={"\u0304":"1","\u0301":"2","\u030c":"3","\u0300":"4"}; let letters="",tones="";
+  for(const ch of s){ if(T[ch]) tones+=T[ch]; else if(ch==="\u0308"){ if(letters.endsWith("u")) letters=letters.slice(0,-1)+"v"; } else if(/[1-4]/.test(ch)) tones+=ch; else if(/[a-z]/.test(ch)) letters+=ch; }
+  return {letters,tones}; }
+const hanOnly=s=>(s.match(/[\u3400-\u9fff]/g)||[]).join("");
+function lev(a,b){const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=[...Array(n+1).keys()];for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c;}return p[n];}
+function enNorm(s){ return strip(s.toLowerCase()).replace(/[^a-z ]/g," ").replace(/\b(to|a|an|the|be|is)\b/g," ").replace(/\s+/g,"").replace(/(es|s)$/,""); }
+function enCandidates(en){ const o=new Set(); en.split(/[;,/]/).forEach(p=>{o.add(enNorm(p.replace(/\(.*?\)/g,"")));o.add(enNorm(p.replace(/[()]/g,"")));}); o.delete(""); return [...o]; }
+function checkEnglish(input,w){ const x=enNorm(input); if(!x) return {ok:false,err:"meaning"};
+  for(const c of enCandidates(w.en)){ const tol=c.length>=9?2:c.length>=5?1:0; if(x===c||lev(x,c)<=tol) return {ok:true}; } return {ok:false,err:"meaning"}; }
+function checkChinese(input,w,pinyinTest){
+  const h=hanOnly(input);
+  if(h && !pinyinTest) return h===hanOnly(w.han) ? {ok:true} : {ok:false,err:"characters"};
+  const you=pyParts(input), tgt=pyParts(w.py);
+  if(!you.letters) return {ok:false,err:"letters"};
+  if(you.letters!==tgt.letters) return {ok:false,err:"letters"};
+  if(you.tones===tgt.tones) return {ok:true};
+  if(!you.tones) return {ok:true, note:"Letters right. You didn't give tones, so tones weren't checked."};
+  return {ok:false, err:"tones", note:"Letters right, tones wrong."};
+}
+
+/* ===================== speech input (browser's own, where offered) ===================== */
+const MIC='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>';
+const REC = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+let rec=null;
+function micClick(){
+  if(rec){ stopMic(); return; }
+  try{
+    rec=new REC(); rec.lang = answerKind(deck[idx].dir)==="en" ? "en-AU" : "zh-CN"; rec.interimResults=true; rec.maxAlternatives=1;
+    rec.onresult=e=>{ const t=[...e.results].map(r=>r[0].transcript).join(""); const i=$("#ans"); if(i) i.value=t.replace(/[。，！？.!?]$/,""); };
+    rec.onend=()=>{ rec=null; const m=$("#mic"); if(m) m.dataset.on="0"; };
+    rec.onerror=()=>{ rec=null; const m=$("#mic"); if(m) m.dataset.on="0"; };
+    rec.start(); $("#mic").dataset.on="1";
+  }catch(e){ rec=null; }
+}
+function stopMic(){ if(rec){ try{rec.stop();}catch(e){} rec=null; } }
+
+function readyKeys(attempts){
+  const by={}; attempts.filter(a=>a.answer_mode!=="flip").slice().sort((a,b)=>a.shown_at<b.shown_at?-1:1).forEach(a=>{ (by[a.word+"|"+a.list_key]=by[a.word+"|"+a.list_key]||[]).push(a.correct); });
+  return new Set(Object.entries(by).filter(([k,v])=>v.length>=2&&v[v.length-1]&&v[v.length-2]).map(([k])=>k));
+}
+function examDays(){ if(!EXAM_DATE) return null; const [y,m,d]=EXAM_DATE.split("-").map(Number); const t=new Date(y,m-1,d), n=new Date(); n.setHours(0,0,0,0); return Math.round((t-n)/864e5); }
+/* ===================== analysis ===================== */
+function wordStats(attempts){
+  const by={};
+  attempts.slice().sort((a,b)=>a.shown_at<b.shown_at?-1:1).forEach(a=>{
+    const k=a.word+"|"+a.list_key; (by[k]=by[k]||{key:k, word:a.word, list:a.list_key, all:[]}).all.push(a);
+  });
+  return Object.values(by).map(s=>{
+    const last5=s.all.slice(-5), wrong5=last5.filter(a=>!a.correct).length;
+    const corr=s.all.filter(a=>a.correct), times=corr.filter(a=>a.answer_mode!=="flip"&&a.response_ms).map(a=>a.response_ms);
+    const errs={}; s.all.filter(a=>!a.correct&&a.error_type).forEach(a=>errs[a.error_type]=(errs[a.error_type]||0)+1);
+    const mix={}; s.all.filter(a=>!a.correct&&a.chosen_word).forEach(a=>mix[a.chosen_word]=(mix[a.chosen_word]||0)+1);
+    return {...s, n:s.all.length, acc:corr.length/s.all.length, acc5:(last5.length-wrong5)/last5.length, wrong5,
+            med:median(times), last:s.all[s.all.length-1].shown_at, errs, mix, w:WORD_BY[s.key]};
+  }).filter(s=>s.w);
+}
+function troubleOf(stats){ return stats.filter(s=>s.n>=2 && (s.wrong5>=2 || (s.n>=3 && s.acc5<0.6))).sort((a,b)=>(b.wrong5-a.wrong5)||(a.acc-b.acc)); }
+function weakWords(){
+  const m=me(); if(!m||!history[m.id]) return [];
+  const stats=wordStats(history[m.id].attempts);
+  const trouble=troubleOf(stats);
+  const overall=median(stats.map(s=>s.med).filter(Boolean))||0;
+  const slow=stats.filter(s=>s.med&&overall&&s.med>overall*1.6&&!trouble.includes(s));
+  const weekAgo=new Date(Date.now()-7*864e5).toISOString();
+  const stale=stats.filter(s=>s.last<weekAgo&&!trouble.includes(s)&&!slow.includes(s)).sort((a,b)=>a.acc-b.acc);
+  return [...trouble, ...slow, ...stale].slice(0,25).map(s=>({w:s.w, s}));
+}
+
+
+/* ===================== topics + lessons ===================== */
+const TOPICS = window.TOPICS||[], TOPIC_OF = window.TOPIC_OF||{}, LESSONS = window.LESSONS||[];
+const lessonOf = k=> (LI(k).lesson||"").split(" · ")[0];
+const LESSON_KEYS = id=> DATES.filter(k=>lessonOf(k)===id);
+const wkey = w=> w.han+"|"+w.date;
+function listLabel(k){
+  const L=LI(k), part=(L.lesson||"").split(" · ")[1]||"";
+  if(L.extra) return {t:"Extra words", s:"from the textbook"};
+  const t = part.replace(/ extra textbook words$/,"");
+  if(!undated(k)) return {t, s:fmtShort(k)};
+  return {t, s: L.sem===2 ? "textbook only" : ""};
+}
+const topicWords = id=> WORDS.filter(w=>(TOPIC_OF[w.han]||[]).includes(id));
+const examWords = ()=> WORDS.filter(w=>termOf(w.date)===EXAM_SEM);
+
+/* ===================== views ===================== */
+let currentTab="home", currentView="home";
+function showView(v){
+  currentView=v;
+  ["home","words","prog","session","result"].forEach(k=>$("#view-"+k).hidden = k!==v);
+  $("#gate").hidden=true;
+  const focus = v==="session"||v==="result";
+  document.body.classList.toggle("focus", focus);
+  if(!focus){ currentTab=v; document.querySelectorAll("#nav button").forEach(b=>b.setAttribute("aria-selected", b.dataset.tab===v)); }
+  renderTray();
+  if(v==="home") renderHome();
+  if(v==="words") renderWords();
+  if(v==="prog") renderProgress();
+  window.scrollTo(0,0);
+}
+document.querySelectorAll("#nav button").forEach(b=>b.onclick=()=>{ if(!$("#gate").hidden) return; showView(b.dataset.tab); });
+
+/* ===================== gate ===================== */
+function showGate(step){
+  ["home","words","prog","session","result"].forEach(k=>$("#view-"+k).hidden=true);
+  $("#gate").hidden=false; $("#nav").hidden=true; $("#who").hidden=true; $("#tray").hidden=true;
+  $("#gate-code").hidden = step!=="code"; $("#gate-who").hidden = step!=="who";
+  if(step==="who"){
+    $("#who-buttons").innerHTML = auth.learners.map(l=>`<button class="primary block" data-id="${l.id}">${esc(l.name)}</button>`).join("") +
+      `<button class="ghost" data-id="guest">Just practising (don't save)</button>`;
+    $("#who-buttons").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+      if(b.dataset.id==="guest"){ auth={...auth, learnerId:null, guestOnce:true}; }
+      else auth.learnerId=b.dataset.id;
+      store.set("cv-auth",auth); enterApp();
+    });
+  } else setTimeout(()=>$("#code").focus(),50);
+}
+$("#code-form").onsubmit=async e=>{
+  e.preventDefault(); const code=$("#code").value.trim().toLowerCase(); const err=$("#code-err"); err.hidden=true;
+  if(!code) return;
+  try{
+    const r=await rpc("vocab_join",{p_code:code});
+    if(!r){ err.textContent="That code didn't work. Check it and try again."; err.hidden=false; return; }
+    auth={code, learners:r.learners, learnerId:null}; store.set("cv-auth",auth); showGate("who");
+  }catch(x){ err.textContent="Couldn't reach the server. Check the internet connection, or just practise."; err.hidden=false; }
+};
+$("#skip-save").onclick=()=>{ auth={guest:true}; store.set("cv-auth",auth); enterApp(); };
+$("#who").onclick=()=>{ if(!auth || auth.guest){ auth=null; store.set("cv-auth",null); showGate("code"); } else showGate("who"); };
+function enterApp(){
+  $("#nav").hidden=false;
+  const m=me(); $("#who").hidden=false;
+  $("#who-name").textContent = m ? m.name : (auth&&auth.code ? "Not saving" : "Set up saving");
+  renderSync(); $("#who-dot").classList.toggle("guest", !m);
+  showView(currentTab||"home");
+  if(m){ loadHistory(m.id).then(()=>{ if(currentView==="home") renderHome(); if(currentView==="prog") renderProgress(); }); }
+  flush();
+}
+
+/* ===================== settings ===================== */
+const cfg = Object.assign({dir:"c2e",show:"han",answer:"type",order:"shuffle",browse:"topics",wordsBy:"lessons"}, store.get("cv-cfg",{}));
+if(!["c2e","e2c","h2p","listen","write","mix"].includes(cfg.dir)) cfg.dir="c2e";
+function saveCfg(){ store.set("cv-cfg",cfg); }
+
+/* ===================== selection (home) ===================== */
+let sel=new Set();
+function selectedWords(){
+  const out=new Map(), add=w=>out.set(wkey(w),w);
+  sel.forEach(s=>{
+    const [kind,id]=[s.slice(0,1), s.slice(2)];
+    if(kind==="q"){ if(id==="exam") examWords().forEach(add); else if(id==="weak") weakWords().forEach(x=>add(x.w)); else WORDS.forEach(add); }
+    else if(kind==="t") topicWords(id).forEach(add);
+    else if(kind==="l") WORDS.filter(w=>w.date===id).forEach(add);
+  });
+  return [...out.values()];
+}
+function selName(s){
+  const [kind,id]=[s.slice(0,1), s.slice(2)];
+  if(kind==="q") return {exam:"Exam words",weak:"My weak words",all:"Everything"}[id];
+  if(kind==="t") return (TOPICS.find(t=>t.id===id)||{}).name;
+  const l=listLabel(id); return lessonOf(id).replace("CME1 ","Bk1 ").replace("CME2 ","Bk2 ")+" "+l.t;
+}
+function toggleSel(k){ sel.has(k)?sel.delete(k):sel.add(k); renderHome(); }
+function renderTray(){
+  const show = currentView==="home" && sel.size>0;
+  $("#tray").hidden=!show; if(!show) return;
+  const n=selectedWords().length, names=[...sel].map(selName);
+  $("#tray-text").innerHTML=`<b>${n}</b> word${n===1?"":"s"} · ${esc(names[0])}${names.length>1?` + ${names.length-1} more`:""}`;
+  $("#tray-go").disabled=!n;
+}
+$("#tray-clear").onclick=()=>{ sel.clear(); renderHome(); };
+$("#tray-go").onclick=()=>openSheet();
+
+function readyMap(){ const m=me(), h=m&&history[m.id]; return h ? readyKeys(h.attempts) : null; }
+function pctReady(ws, r){ if(!r||!ws.length) return null; return Math.round(ws.filter(w=>r.has(wkey(w))).length/ws.length*100); }
+
+function renderHome(){
+  const m=me();
+  $("#hello").innerHTML = `<span class="zh">你好</span>${m?esc(m.name):""}`;
+  renderExam("#exam-home");
+  renderToday();
+  $("#browse").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.v===cfg.browse));
+  const r=readyMap();
+  const ww = m ? weakWords().length : 0;
+  const q=[["exam","Exam words",examWords().length],...(ww?[["weak","My weak words",ww]]:[]),["all","Everything",WORDS.length]];
+  $("#quick").innerHTML = q.map(([id,name,n])=>`<button class="qchip" data-k="q:${id}" aria-pressed="${sel.has("q:"+id)}">${name} <span class="n">${n}</span></button>`).join("");
+  $("#pick-topics").hidden = cfg.browse!=="topics"; $("#pick-lessons").hidden = cfg.browse!=="lessons";
+  if(cfg.browse==="topics"){
+    $("#pick-topics").innerHTML = TOPICS.map(t=>{ const ws=topicWords(t.id), p=pctReady(ws,r), on=sel.has("t:"+t.id);
+      return `<button class="tile" data-k="t:${t.id}" aria-pressed="${on}"><span class="tick">✓</span><span class="ic">${esc(t.icon)}</span><b>${esc(t.name)}</b>
+        <span class="meta">${ws.length} words${p!=null?` · ${p}% ready`:""}</span>${p!=null?`<span class="mini"><i style="width:${p}%"></i></span>`:""}</button>`; }).join("");
+  } else {
+    const sems=[2,1];
+    $("#pick-lessons").innerHTML = sems.map(sm=>`<div class="sem"><div class="sem-head"><span class="label">Semester ${sm}${"Semester "+sm===EXAM_SEM?" · on the exam":""}</span></div>`+
+      LESSONS.filter(l=>l.sem===sm).map(l=>{ const ks=LESSON_KEYS(l.id), all=ks.length&&ks.every(k=>sel.has("l:"+k)), ws=WORDS.filter(w=>ks.includes(w.date)), p=pctReady(ws,r);
+        return `<div class="card lesson"><button class="lesson-title" data-lesson="${esc(l.id)}" style="border:0;background:none;padding:0;text-align:left;width:100%" aria-pressed="${all}">
+            <span><span class="code">${esc(l.id.replace("CME","Book ").replace(" L"," · Lesson "))}</span><br><span class="zh">${esc(l.zh)}</span> <span class="en">${esc(l.en)}</span></span>
+            <span class="hint">${ws.length} words${p!=null?` · ${p}% ready`:""} · <u>${all?"clear":"select all"}</u></span></button>
+          <div class="lchips">${ks.map(k=>{ const lb=listLabel(k), n=WORDS.filter(w=>w.date===k).length;
+            return `<button class="lchip${LI(k).extra?" extra":""}" data-k="l:${k}" aria-pressed="${sel.has("l:"+k)}">${esc(lb.t)} · ${n}${lb.s?`<small>${esc(lb.s)}</small>`:""}</button>`; }).join("")}</div></div>`; }).join("")+`</div>`).join("");
+  }
+  document.querySelectorAll("#view-home [data-k]").forEach(b=>b.onclick=()=>toggleSel(b.dataset.k));
+  document.querySelectorAll("#view-home [data-lesson]").forEach(b=>b.onclick=()=>{ const ks=LESSON_KEYS(b.dataset.lesson).map(k=>"l:"+k), all=ks.every(k=>sel.has(k)); ks.forEach(k=>all?sel.delete(k):sel.add(k)); renderHome(); });
+  renderTray();
+}
+$("#browse").querySelectorAll("button").forEach(b=>b.onclick=()=>{ cfg.browse=b.dataset.v; saveCfg(); renderHome(); });
+
+/* ===================== practice sheet ===================== */
+const SPK='<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
+const DIRS=[["c2e","意","Meaning","See Chinese, give English"],["e2c","说","Say it in Chinese","See English, give pinyin or 汉字"],
+  ["h2p","拼","Pinyin","See 汉字, type the pinyin"],["listen",SPK,"Listening","Hear it, give the meaning"],
+  ["write","写","Writing","Draw the characters"],["mix","混","Mix it up","A bit of everything"]];
+let sheetWords=[], sheetLabel="custom";
+function openSheet(words, title){
+  sheetWords = words || selectedWords(); sheetLabel = words ? "group" : "custom";
+  if(!sheetWords.length) return;
+  $("#sheet-title").textContent = `Practise ${sheetWords.length} word${sheetWords.length>1?"s":""}`;
+  $("#sheet-sub").textContent = title || [...sel].map(selName).join(", ");
+  renderSheet();
+  const d=$("#sheet"); if(d.showModal) d.showModal(); else d.setAttribute("open","");
+}
+function closeSheet(){ const d=$("#sheet"); if(d.close) d.close(); else d.removeAttribute("open"); }
+$("#sheet-x").onclick=closeSheet;
+$("#sheet").addEventListener("click",e=>{ if(e.target===$("#sheet")) closeSheet(); });
+function renderSheet(){
+  $("#dir").innerHTML = DIRS.map(([v,g,t,s])=>`<button class="qopt" data-v="${v}" aria-pressed="${cfg.dir===v}"><span class="g">${g}</span><span><b>${t}</b><small>${s}</small></span></button>`).join("");
+  $("#dir").querySelectorAll("button").forEach(b=>b.onclick=()=>{ cfg.dir=b.dataset.v; saveCfg(); renderSheet(); });
+  [["#answer","answer"],["#show","show"],["#order","order"]].forEach(([s,k])=>$(s).querySelectorAll("button").forEach(b=>{ b.setAttribute("aria-pressed", b.dataset.v===cfg[k]); b.onclick=()=>{ cfg[k]=b.dataset.v; saveCfg(); renderSheet(); }; }));
+  $("#answer-row").hidden = cfg.dir==="write";
+  $("#show-row").hidden = cfg.dir!=="c2e" && cfg.dir!=="mix";
+}
+$("#start").onclick=()=>{ closeSheet(); startSession(sheetWords, sheetLabel, cfg.dir==="mix" ? {dirs:TODAY_DIRS(), answer: cfg.answer==="flip"?"type":cfg.answer} : {}); };
+
+/* ===================== session ===================== */
+let deck=[], idx=0, missed=[], got=0, state=null, sess=null, sessOpts={};
+const answerKind=dir=> dir==="c2e"||dir==="listen"?"en": dir==="e2c"?"zh": dir==="write"?"write":"py";
+const mode=()=> deck[idx] ? deck[idx].mode : cfg.answer;
+const HAN_RE=/[㐀-鿿]/;
+function chineseFront(w){ if(cfg.show==="py") return `<div class="big-py">${esc(w.py)}</div>`; if(cfg.show==="both") return `<div class="big-han">${esc(w.han)}</div><div class="big-py">${esc(w.py)}</div>`; return `<div class="big-han">${esc(w.han)}</div>`; }
+function fullAnswer(w){ const has=$("#card")&&$("#card").querySelector("[data-say]"); return `<div class="answer"><div class="a-han">${esc(w.han)}</div><div class="a-py">${esc(w.py)}</div><div class="a-en">${esc(w.en)}</div>${has?"":sayBtn(w.han,true)}</div>`; }
+function cardMode(dir, ans){ if(dir==="write") return "write"; return ans; }
+
+// opts.dirs: optional array of directions to rotate through (Today's practice, Mix it up)
+function startSession(words, label, opts={}){
+  sessOpts=opts;
+  const ws=(cfg.order==="shuffle"||label==="weak"||label==="today"||label==="trouble"?shuffle(words.slice()):words.slice());
+  const ans = opts.answer || cfg.answer;
+  deck=ws.map((w,i)=>{
+    let dir = opts.dirs ? opts.dirs[i % opts.dirs.length] : cfg.dir;
+    if(dir==="write" && !window.HanziWriter) dir="e2c";
+    return {w, dir, mode:cardMode(dir, ans)};
+  });
+  idx=0; missed=[]; got=0;
+  const m=me();
+  sess = { id:uuid(), learner_id:m?m.id:null, started_at:new Date().toISOString(), ended_at:null, n_cards:0, n_correct:0,
+           settings:{pick:label||"custom", sel:label==="custom"?[...sel]:undefined, dir:opts.dirs?"mixed":cfg.dir, show:cfg.show, answer:ans, size:deck.length} };
+  logSession(sess);
+  showView("session"); showCard();
+}
+function showCard(){
+  stopMic(); audioUsed=false; stopWriting();
+  const {w,dir}=deck[idx];
+  state={phase:"ask", shownAt:new Date(), t0:performance.now()};
+  $("#prog-text").textContent=`${idx+1} / ${deck.length}`; $("#prog-bar").style.width=`${idx/deck.length*100}%`;
+  let front="",label="";
+  if(dir==="c2e"){label="What does it mean?"; front=chineseFront(w)+sayBtn(w.han,true);}
+  else if(dir==="e2c"){label="Say it in Chinese"; front=`<div class="big-en">${esc(w.en)}</div>`;}
+  else if(dir==="listen"){label="Listen · what does it mean?"; front=`<button class="say listen" data-say="${esc(w.han)}" aria-label="Play the word again">${ICON}</button><div class="hint">Tap to hear it again</div>`;}
+  else if(dir==="write"){label="Write it in characters"; front=`<div class="big-en">${esc(w.en)}</div><div class="big-py" style="font-size:1.4rem">${esc(w.py)}</div>${sayBtn(w.han,true)}`;}
+  else {label="What's the pinyin?"; front=`<div class="big-han">${esc(w.han)}</div>`;}
+  const hint = mode()==="flip" ? `<div class="hint">Say it out loud, then tap the card to check</div>` : "";
+  $("#card").className="qcard"+(mode()==="flip"?" flippable":"");
+  $("#card").innerHTML=`<div class="dir">${label}</div>${front}${hint}`; bindSay($("#card"));
+  $("#grade").hidden=true; renderRespond();
+  if(dir==="listen") setTimeout(()=>{ if(deck[idx]&&deck[idx].w===w) say(w.han); }, 250);
+}
+function renderRespond(){
+  const {w,dir}=deck[idx], kind=answerKind(dir), R=$("#respond");
+  if(dir==="write") return renderWriting();
+  if(mode()==="flip"){ R.innerHTML=`<button class="primary block" id="flipbtn">Show answer</button>`; $("#flipbtn").onclick=flip; return; }
+  if(mode()==="type"){
+    const ph = kind==="en"?"Type the English": kind==="zh"?"Pinyin (mian4 bao1) or 汉字":"Pinyin with tones: mian4 bao1";
+    R.innerHTML=`<div class="type-row"><input id="ans" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" class="${kind!=="en"?"zh":""}" placeholder="${ph}" aria-label="Your answer">${REC?`<button class="mic" id="mic" aria-label="Say your answer">${MIC}</button>`:""}</div>
+      <div class="two"><button class="primary" id="check">Check</button><button class="ghost" id="dunno">I don't know</button></div>`;
+    if(dir!=="listen") $("#ans").focus({preventScroll:true});
+    $("#check").onclick=()=>submitTyped($("#ans").value);
+    $("#dunno").onclick=()=>submitTyped("");
+    if(REC) $("#mic").onclick=micClick;
+    return;
+  }
+  const opts=choicesFor(w,kind); state.opts=opts;
+  R.innerHTML=`<div class="choices">${opts.map((o,i)=>`<button class="choice" data-i="${i}"><span class="k">${i+1}</span><span>${optLabel(o,kind)}</span></button>`).join("")}</div>`;
+  R.querySelectorAll(".choice").forEach(b=>b.onclick=()=>pickChoice(+b.dataset.i));
+}
+
+/* --- character writing (Hanzi Writer: stroke-order data loads from the internet) --- */
+let writers=[];
+function stopWriting(){ writers.forEach(x=>{ try{ x.cancelQuiz(); }catch(e){} }); writers=[]; }
+function renderWriting(){
+  const {w}=deck[idx], R=$("#respond");
+  const chars=[...w.han].filter(c=>HAN_RE.test(c));
+  if(!window.HanziWriter){
+    R.innerHTML=`<div class="hint">Writing practice needs an internet connection. Write it on paper, then check.</div><button class="primary block" id="w-paper">Show answer</button>`;
+    $("#w-paper").onclick=()=>{ state.phase="flipped"; state.flipMs=Math.round(performance.now()-state.t0); $("#card").insertAdjacentHTML("beforeend", fullAnswer(w)); bindSay($("#card")); R.innerHTML=""; $("#grade").hidden=false; };
+    return;
+  }
+  const per=Math.min(chars.length,4);
+  const size=Math.max(110, Math.min(200, Math.floor(($("#respond").clientWidth-12*(per-1))/per)));
+  R.innerHTML=`<div class="write-row">${chars.map((c,i)=>`<div class="wbox" id="wb${i}" style="width:${size}px;height:${size}px"></div>`).join("")}</div>
+    <div class="hint" id="w-status" style="text-align:center">Write the first character, stroke by stroke, in the highlighted box.</div>
+    <div class="btns" id="w-btns"><button class="ghost" id="w-hint">Show outline</button><button class="ghost" id="w-show">Show me how</button><button class="ghost" id="w-skip">I don't know</button></div>`;
+  const cs=getComputedStyle(document.documentElement), col=v=>cs.getPropertyValue(v).trim();
+  state.write={chars, i:0, mistakes:0, hinted:false};
+  writers=chars.map((c,i)=>HanziWriter.create("wb"+i, c, {width:size,height:size,padding:10,showCharacter:false,showOutline:false,
+    strokeColor:col("--fg"), outlineColor:col("--line"), drawingColor:col("--ink"), highlightColor:col("--ink"),
+    drawingWidth:Math.round(size/9), showHintAfterMisses:3, highlightOnComplete:true, strokeFadeDuration:300,
+    charDataLoader:(ch,onLoad,onErr)=>{ fetch(`https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0.1/${encodeURIComponent(ch)}.json`).then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); }).then(onLoad).catch(onErr); }}));
+  const startQuiz=i=>{
+    document.querySelectorAll(".wbox").forEach((b,j)=>b.classList.toggle("on",j===i));
+    $("#w-status").textContent = chars.length>1 ? `Character ${i+1} of ${chars.length}. Write it stroke by stroke.` : "Write it stroke by stroke.";
+    writers[i].quiz({ onComplete:({totalMistakes})=>{ state.write.mistakes+=totalMistakes; state.write.i=i+1;
+      if(i+1<chars.length) startQuiz(i+1); else finishWriting(); } });
+  };
+  state.write.start=startQuiz; startQuiz(0);
+  $("#w-hint").onclick=()=>{ state.write.hinted=true; writers[state.write.i]&&writers[state.write.i].showOutline(); };
+  $("#w-show").onclick=()=>{ const i=state.write.i; if(!writers[i]) return; state.write.hinted=true; try{writers[i].cancelQuiz();}catch(e){}
+    writers[i].animateCharacter({onComplete:()=>{ writers[i].hideCharacter(); startQuiz(i); }}); };
+  $("#w-skip").onclick=()=>{ if(state.phase!=="ask") return; writers.forEach(x=>{ try{x.cancelQuiz();}catch(e){} try{x.showCharacter();}catch(e){} }); writers=[]; record(false,"skipped",null,"writing"); reveal(false,"",null); };
+}
+function finishWriting(){
+  if(state.phase!=="ask") return;
+  const {chars,mistakes,hinted}=state.write;
+  const ok = !hinted && mistakes <= chars.length;   // about one slip per character allowed
+  const note = `${mistakes} stroke mistake${mistakes===1?"":"s"}${hinted?", used a hint":""}`;
+  record(ok, note, null, ok?null:"writing");
+  document.querySelectorAll(".wbox").forEach(b=>b.classList.remove("on"));
+  reveal(ok, null, note);
+}
+
+function optLabel(o,kind){ if(kind==="en") return esc(o.en); if(kind==="py") return `<span class="c-py" style="font-size:1.1rem">${esc(o.py)}</span>`; return `<span class="c-han">${esc(o.han)}</span> <span class="c-py">${esc(o.py)}</span>`; }
+function choicesFor(w,kind){
+  const key=o=> kind==="en"?enCandidates(o.en).join("|"): kind==="py"?o.py:o.han;
+  const tgtEn=enCandidates(w.en);
+  const pool=shuffle(WORDS.filter(o=>o.han!==w.han && key(o)!==key(w) && !(kind==="en" && enCandidates(o.en).some(c=>tgtEn.includes(c)))));
+  const picked=[], seen=new Set([key(w)]);
+  for(const o of pool){ if(picked.length>=4) break; if(!seen.has(key(o))){seen.add(key(o));picked.push(o);} }
+  return shuffle([w,...picked]);
+}
+function record(correct, answerText, chosen, err){
+  const {w,dir}=deck[idx], m=me();
+  const a={ id:uuid(), learner_id:m?m.id:null, session_id:sess.id, word:w.han, list_key:w.date, direction:dir, answer_mode:mode(),
+            shown_at:state.shownAt.toISOString(), response_ms:Math.round(performance.now()-state.t0), correct, overridden:false,
+            answer_text:answerText??null, chosen_word:chosen??null, error_type:correct?null:(err||null), audio_played:audioUsed||dir==="listen" };
+  state.attempt=a; logAttempt(a);
+}
+function pickChoice(i){
+  if(state.phase!=="ask"||mode()!=="choice") return;
+  const {w}=deck[idx], o=state.opts[i], ok=o.han===w.han;
+  $("#respond").querySelectorAll(".choice").forEach((b,j)=>{ b.disabled=true; if(state.opts[j].han===w.han) b.classList.add("right"); else if(j===i) b.classList.add("wrong"); });
+  record(ok, null, o.han, ok?null:"choice");
+  reveal(ok,null,null);
+}
+function submitTyped(text){
+  if(state.phase!=="ask") return; stopMic();
+  const {w,dir}=deck[idx], kind=answerKind(dir), t=text.trim();
+  const res = !t ? {ok:false,err:"skipped"} : kind==="en" ? checkEnglish(t,w) : checkChinese(t,w,kind==="py");
+  record(res.ok, t, null, res.err);
+  reveal(res.ok, t, res.note);
+}
+function reveal(ok, typed, note){
+  state.phase="done"; state.ok=ok;
+  const {w}=deck[idx];
+  $("#card").insertAdjacentHTML("beforeend", fullAnswer(w)); bindSay($("#card"));
+  const R=$("#respond"), keep=mode()==="choice"||mode()==="write";
+  const verdict=`<div class="verdict ${ok?"ok":"no"}" id="verdict"><span id="vtxt">${ok?"✓ Correct":"✗ Not quite"}</span>
+    ${typed?`<span class="yours">You said: ${esc(typed)}</span>`:""}${typed===""?`<span class="yours">Skipped</span>`:""}${note?`<span class="yours">${esc(note)}</span>`:""}</div>`;
+  const override = mode()==="choice" ? "" : `<button class="textbtn" id="override">${ok?"Actually, count this as wrong":"I was right, count it"}</button>`;
+  const nextRow=`<button class="primary block" id="next">${idx+1<deck.length?"Next":"Finish"} →</button>${override?`<div style="text-align:center">${override}</div>`:""}`;
+  if(keep){ const b=$("#w-btns"); if(b) b.remove(); const s=$("#w-status"); if(s) s.remove(); R.insertAdjacentHTML("beforeend", verdict+nextRow); }
+  else R.innerHTML=verdict+nextRow;
+  $("#next").onclick=next; $("#next").focus({preventScroll:true});
+  const ov=$("#override");
+  if(ov) ov.onclick=()=>{ state.ok=!state.ok; const v=$("#verdict"); v.className="verdict "+(state.ok?"ok":"no"); $("#vtxt").textContent=state.ok?"✓ Counted as right":"✗ Counted as wrong"; ov.remove();
+    if(state.attempt){ state.attempt={...state.attempt, correct:state.ok, overridden:true, error_type:state.ok?null:(state.attempt.error_type||"self")}; logAttempt(state.attempt); } };
+  setTimeout(()=>$("#respond").scrollIntoView({block:"nearest",behavior:"smooth"}),50);
+}
+function next(){
+  if(state.phase!=="done") return;
+  if(state.ok) got++; else missed.push(deck[idx].w);
+  idx++; sess.n_cards=idx; sess.n_correct=got; logSession(sess);
+  if(idx>=deck.length) finish(); else { showCard(); window.scrollTo(0,0); }
+}
+function flip(){
+  if(mode()!=="flip"||state.phase!=="ask") return;
+  state.phase="flipped"; state.flipMs=Math.round(performance.now()-state.t0);
+  const h=$("#card").querySelector(".hint"); if(h) h.remove();
+  $("#card").classList.remove("flippable");
+  $("#card").insertAdjacentHTML("beforeend", fullAnswer(deck[idx].w)); bindSay($("#card")); $("#respond").innerHTML=""; $("#grade").hidden=false;
+}
+function grade(ok){
+  if(state.phase!=="flipped") return;
+  const t0=state.t0; state.t0=performance.now()-state.flipMs;   // time to reveal, not time to self-grade
+  record(ok,null,null,ok?null:"self"); state.t0=t0;
+  state.phase="done"; state.ok=ok; $("#grade").hidden=true; next();
+}
+function finish(){
+  stopMic(); stopWriting(); sess.ended_at=new Date().toISOString(); sess.n_cards=deck.length>idx?idx:deck.length; sess.n_correct=got; logSession(sess); flush();
+  const total=sess.n_cards, pct=total?Math.round(got/total*100):0;
+  const msg = pct===100?"Perfect round! 太棒了":pct>=80?"Great work 很好":pct>=50?"Getting there 加油":"Keep going 加油";
+  $("#result").innerHTML=`<span class="label">Round done</span>
+    <div class="ring" style="--p:${pct}"><div><b>${got}/${total}</b><span>${pct}%</span></div></div>
+    <h2>${msg}</h2>
+    ${missed.length?`<div class="missed"><span class="label">To work on</span>${missed.map(w=>`<div class="mrow">${sayBtn(w.han)}<span class="h">${esc(w.han)}</span><span class="p">${esc(w.py)}</span><span class="e">${esc(w.en)}</span></div>`).join("")}</div>`:""}
+    <div class="btns">${missed.length?`<button class="primary" id="retry">Practise the ${missed.length} missed</button>`:""}
+      <button class="ghost" id="again">Same words again</button><button class="ghost" id="back">Done</button></div>
+    ${me()?`<div class="hint">Saved to ${esc(me().name)}'s progress.</div>`:""}`;
+  bindSay($("#result"));
+  const lastDeck=deck.slice(0,total), missedNow=missed.slice(), label=sess.settings.pick, opts=sessOpts;
+  const r=$("#retry"); if(r) r.onclick=()=>startSession(missedNow,"retry", opts.dirs?{dirs:TODAY_DIRS(),answer:opts.answer}:{});
+  $("#again").onclick=()=>startSession(lastDeck.map(c=>c.w),"again", opts.dirs?{dirs:lastDeck.map(c=>c.dir),answer:opts.answer}:{});
+  $("#back").onclick=()=>{ sel.clear(); showView(currentTab); };
+  showView("result");
+}
+
+/* ===================== today's practice ===================== */
+const TODAY_SIZE=15;
+const TODAY_DIRS=()=> shuffle(["c2e","listen","e2c","write","c2e","listen","e2c","h2p"].filter(d=>d!=="write"||window.HanziWriter));
+const INTERVALS=[0,1,2,4,7,14,30];   // days before a word is due again, by how many times in a row it's been right
+function todaysWords(){
+  const m=me(), h=m&&history[m.id];
+  const pool = examDays()!=null && examDays()>=0 ? examWords() : WORDS;   // before the exam, Today's practice sticks to exam words
+  const inPool=new Set(pool.map(wkey));
+  if(!h||!h.attempts.length) return shuffle(pool.slice()).slice(0,TODAY_SIZE);
+  const stats=wordStats(h.attempts.filter(a=>a.answer_mode!=="flip")).filter(s=>inPool.has(s.key));
+  const trouble=troubleOf(stats).slice(0,6);
+  const now=Date.now();
+  const due=stats.filter(s=>!trouble.includes(s)).map(s=>{
+    let streak=0; for(let i=s.all.length-1;i>=0&&s.all[i].correct;i--) streak++;
+    const days=(now-new Date(s.last).getTime())/864e5, iv=INTERVALS[Math.min(streak,INTERVALS.length-1)];
+    return {s, over: iv===0 ? 99 : days/iv};
+  }).filter(x=>x.over>=1).sort((a,b)=>b.over-a.over).map(x=>x.s);
+  const seen=new Set(stats.map(s=>s.key));
+  const fresh=shuffle(pool.filter(w=>!seen.has(wkey(w))));
+  const out=[], keys=new Set();
+  const add=w=>{ const k=wkey(w); if(!keys.has(k)&&out.length<TODAY_SIZE){ keys.add(k); out.push(w); } };
+  trouble.forEach(s=>add(s.w)); due.forEach(s=>add(s.w)); fresh.forEach(add);
+  if(out.length<TODAY_SIZE) shuffle(pool.slice()).forEach(add);
+  return out;
+}
+function doneToday(){
+  const m=me(), h=m&&history[m.id]; if(!h) return 0;
+  const today=localDay(Date.now());
+  const ids=new Set((h.sessions||[]).filter(s=>s.settings&&s.settings.pick==="today"&&localDay(s.started_at)===today).map(s=>s.id));
+  Object.values(queue.sessions).filter(s=>s.settings&&s.settings.pick==="today"&&localDay(s.started_at)===today).forEach(s=>ids.add(s.id));
+  if(sess&&sess.settings&&sess.settings.pick==="today"&&localDay(sess.started_at)===today) ids.add(sess.id);
+  return ids.size;
+}
+function renderToday(){
+  const n=doneToday(), b=$("#today-go");
+  b.classList.toggle("done", n>0);
+  b.querySelector(".big").textContent = n ? "✓" : "今";
+  b.querySelector("b").textContent = n ? "Today's practice done" : "Today's practice";
+  $("#today-hint").textContent = n ? `${n} round${n>1?"s":""} today. Another round is fine.` :
+    me() ? `${TODAY_SIZE} cards picked for you · about 5 minutes` : `${TODAY_SIZE} mixed cards · about 5 minutes`;
+}
+$("#today-go").onclick=()=>startSession(todaysWords(),"today",{dirs:TODAY_DIRS(), answer: cfg.answer==="flip"?"type":cfg.answer});
+
+/* ===================== keyboard ===================== */
+$("#card").onclick=e=>{ if(!e.target.closest("[data-say]")) flip(); };
+$("#btn-got").onclick=()=>grade(true); $("#btn-miss").onclick=()=>grade(false);
+$("#quit").onclick=()=>{ if(state&&state.phase==="done"&&deck[idx]){ if(state.ok) got++; else missed.push(deck[idx].w); idx++; state.phase="ended"; }
+  if(idx>0){ deck=deck.slice(0,idx); finish(); } else { stopWriting(); stopMic(); sess=null; showView(currentTab); } };
+document.addEventListener("keydown",e=>{
+  if($("#view-session").hidden||!state||!deck[idx]) return;
+  const inInput=e.target.tagName==="INPUT", m=mode();
+  if(e.key==="Enter"){ if(state.phase==="done"){e.preventDefault();next();} else if(inInput&&m==="type"){e.preventDefault();submitTyped(e.target.value);} else if(m==="flip"){e.preventDefault();flip();} return; }
+  if(inInput) return;
+  if(m==="flip"||state.phase==="flipped"){ if(e.key===" "){e.preventDefault();flip();} else if(e.key==="1") grade(false); else if(e.key==="2") grade(true); }
+  else if(m==="choice" && /^[1-5]$/.test(e.key)) pickChoice(+e.key-1);
+  if((e.key==="s"||e.key==="S")){ const c=deck[idx]; if(c.dir==="c2e"||c.dir==="listen"||c.dir==="write"||state.phase!=="ask") say(c.w.han); }
+});
+
+/* ===================== exam card ===================== */
+function renderExam(selector, learnerId){
+  const el=$(selector); if(!el) return;
+  const id=learnerId||(me()&&me().id), h=id&&history[id];
+  const days=examDays(), EW=examWords();
+  const dateTxt = EXAM_DATE ? new Date(EXAM_DATE+"T00:00").toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short"}) : null;
+  const top = days==null ? `<div class="exam-days">Exam date to be added</div>` :
+    days>0 ? `<div class="exam-days"><span class="n">${days}</span>day${days===1?"":"s"} to the exam</div><div class="muted small">${dateTxt} · ${EXAM_TIME}</div>` :
+    days===0 ? `<div class="exam-days">Exam today, ${EXAM_TIME}. 加油!</div>` : `<div class="exam-days">Exam was ${dateTxt}</div>`;
+  let bottom=`<div class="exam-ready">On the exam: ${EXAM_SEM} (Book 1 Lesson 15, Book 2 Lessons 1–3) · <b>${EW.length}</b> words</div>`;
+  if(h){ const r=readyKeys(h.attempts), n=EW.filter(w=>r.has(wkey(w))).length, p=Math.round(n/EW.length*100);
+    bottom=`<div class="bar"><i style="width:${p}%;background:var(--good)"></i></div><div class="exam-ready">Exam-ready <b>${p}%</b> · ${n} of ${EW.length} exam words right on the last 2 tries</div>`; }
+  el.innerHTML=`<div class="exam-top">${top}</div>${bottom}`;
+}
+
+/* ===================== words view ===================== */
+let openGroups=new Set();
+const wordRow=(w,src)=>`<div class="w">${sayBtn(w.han)}<span class="h">${esc(w.han)}</span><span class="pe"><div class="p">${esc(w.py)}</div><div class="e">${esc(w.en)}</div>${src?`<div class="src">${esc(src)}</div>`:""}</span></div>`;
+const srcOf = w=>{ const l=listLabel(w.date); return `${lessonOf(w.date).replace("CME","Book ").replace(" L"," · L")} · ${l.t}${l.s?` (${l.s})`:""}`; };
+function renderWords(){
+  $("#words-by").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.v===cfg.wordsBy));
+  const q=$("#q").value.trim().toLowerCase(), G=$("#groups");
+  if(q){
+    const qs=strip(q).replace(/[0-9\s]/g,"");
+    const hits=WORDS.filter(w=>w.han.includes(q) || strip(w.py.toLowerCase()).replace(/\s/g,"").includes(qs) || w.en.toLowerCase().includes(q));
+    G.innerHTML = hits.length ? `<div class="card group"><div class="wlist" style="border-top:0">${hits.map(w=>wordRow(w,srcOf(w))).join("")}</div></div>` : `<div class="empty">No words match “${esc(q)}”.</div>`;
+    bindSay(G); return;
+  }
+  let html="";
+  if(cfg.wordsBy==="lessons"){
+    [2,1].forEach(sm=>{
+      html+=`<span class="label" style="margin-top:6px">Semester ${sm}${"Semester "+sm===EXAM_SEM?" · on the exam":""}</span>`;
+      LESSONS.filter(l=>l.sem===sm).forEach(l=>{
+        const ks=LESSON_KEYS(l.id), n=WORDS.filter(w=>ks.includes(w.date)).length, gid="L:"+l.id;
+        html+=`<details class="card group" data-g="${esc(gid)}" ${openGroups.has(gid)?"open":""}><summary><span class="ic">${esc(l.zh[0]==="我"?l.zh[l.zh.length-1]:l.zh[0])}</span>
+          <span class="t"><b><span style="font-family:var(--han)">${esc(l.zh)}</span> · ${esc(l.en)}</b><small>${esc(l.id.replace("CME","Book ").replace(" L"," · Lesson "))} · ${n} words</small></span><span class="chev">›</span></summary>
+          ${ks.map(k=>{ const lb=listLabel(k), ws=WORDS.filter(w=>w.date===k);
+            return `<div class="subhead">${esc(lb.t)}${lb.s?` · ${esc(lb.s)}`:""}</div>${NOTES[k]&&!/checked against/i.test(NOTES[k])?`<div class="note" style="padding-top:8px">${esc(NOTES[k])}</div>`:""}<div class="wlist" style="border-top:0">${ws.map(w=>wordRow(w)).join("")}</div>`; }).join("")}
+          <div class="gfoot"><button class="primary" data-practise-lesson="${esc(l.id)}">Practise this lesson</button></div></details>`;
+      });
+    });
+  } else {
+    TOPICS.forEach(t=>{ const ws=topicWords(t.id), gid="T:"+t.id;
+      html+=`<details class="card group" data-g="${esc(gid)}" ${openGroups.has(gid)?"open":""}><summary><span class="ic">${esc(t.icon)}</span><span class="t"><b>${esc(t.name)}</b><small>${ws.length} words</small></span><span class="chev">›</span></summary>
+        <div class="wlist">${ws.map(w=>wordRow(w,srcOf(w))).join("")}</div>
+        <div class="gfoot"><button class="primary" data-practise-topic="${t.id}">Practise this topic</button></div></details>`; });
+  }
+  G.innerHTML=html; bindSay(G);
+  G.querySelectorAll("details").forEach(d=>d.addEventListener("toggle",()=>{ d.open?openGroups.add(d.dataset.g):openGroups.delete(d.dataset.g); }));
+  G.querySelectorAll("[data-practise-lesson]").forEach(b=>b.onclick=()=>{ const l=LESSONS.find(x=>x.id===b.dataset.practiseLesson), ks=LESSON_KEYS(l.id); openSheet(WORDS.filter(w=>ks.includes(w.date)), `${l.zh} · ${l.en}`); });
+  G.querySelectorAll("[data-practise-topic]").forEach(b=>b.onclick=()=>{ const t=TOPICS.find(x=>x.id===b.dataset.practiseTopic); openSheet(topicWords(t.id), t.name); });
+}
+$("#q").addEventListener("input",renderWords);
+$("#words-by").querySelectorAll("button").forEach(b=>b.onclick=()=>{ cfg.wordsBy=b.dataset.v; saveCfg(); renderWords(); });
+
+/* ===================== progress view ===================== */
+let progLearner=null;
+async function renderProgress(){
+  const body=$("#prog-body");
+  if(!auth||auth.guest||!auth.learners){ $("#prog-who").hidden=true;
+    body.innerHTML=`<div class="card" style="padding:18px;display:grid;gap:10px"><b>Progress isn't being saved on this device.</b><div class="muted">Set it up with the family code and every answer is kept: days studied, trouble words, exam readiness.</div><div><button class="primary" id="setup-now">Set up saving</button></div></div>`;
+    $("#setup-now").onclick=()=>{auth=null;store.set("cv-auth",null);showGate("code");}; return; }
+  const meNow=me();
+  if(!progLearner) progLearner = (meNow && meNow.role==="student") ? meNow.id : (auth.learners.find(l=>l.role==="student")||auth.learners[0]).id;
+  if(meNow && meNow.role==="student") progLearner=meNow.id;
+  $("#prog-who").hidden = !(meNow && meNow.role==="parent");
+  $("#prog-who").innerHTML = auth.learners.map(l=>`<button data-id="${l.id}" aria-pressed="${l.id===progLearner}">${esc(l.name)}</button>`).join("");
+  $("#prog-who").querySelectorAll("button").forEach(b=>b.onclick=()=>{progLearner=b.dataset.id; renderProgress();});
+  body.innerHTML=`<div class="empty">Loading…</div>`;
+  const h=await loadHistory(progLearner);
+  const who=auth.learners.find(l=>l.id===progLearner);
+  const A=(h&&h.attempts)||[];
+  if(!A.length){ body.innerHTML=`<div class="card exam" id="exam-prog"></div><div class="card" style="padding:18px" class="muted">No results for ${esc(who?who.name:"")} yet. Every answer in Practise is saved here automatically.</div>`; renderExam("#exam-prog", progLearner); return; }
+  const scored=A.filter(a=>a.answer_mode!=="flip"), flips=A.filter(a=>a.answer_mode==="flip");
+  const days=[...new Set(A.map(a=>localDay(a.shown_at)))].sort();
+  const sessIds=new Set(A.map(a=>a.session_id).filter(Boolean));
+  const acc=scored.length? Math.round(scored.filter(a=>a.correct).length/scored.length*100):null;
+  const medAll=median(scored.filter(a=>a.correct&&a.response_ms).map(a=>a.response_ms));
+  let streak=0; { const set=new Set(days); let d=new Date(); if(!set.has(localDay(d))) d=new Date(Date.now()-864e5); while(set.has(localDay(d))){ streak++; d=new Date(d.getTime()-864e5); } }
+  const stats=wordStats(A), trouble=troubleOf(stats);
+  const overall=median(stats.map(s=>s.med).filter(Boolean))||0;
+  const slow=stats.filter(s=>s.med&&s.n>=2&&overall&&s.med>overall*1.6).sort((a,b)=>b.med-a.med).slice(0,10);
+  const errCount={}; A.filter(a=>!a.correct&&a.error_type).forEach(a=>errCount[a.error_type]=(errCount[a.error_type]||0)+1);
+  const mixups=[]; stats.forEach(s=>Object.entries(s.mix).forEach(([c,n])=>mixups.push({s,c,n}))); mixups.sort((a,b)=>b.n-a.n);
+  const perDay={}; A.forEach(a=>{const d=localDay(a.shown_at); perDay[d]=(perDay[d]||0)+1;});
+  const today=new Date(); const start=new Date(today); start.setDate(start.getDate()-((today.getDay()+6)%7)-7*11);
+  let cells=""; for(let d=new Date(start); d<=today; d.setDate(d.getDate()+1)){ const k=localDay(d), n=perDay[k]||0; const l=n===0?0:n<10?1:n<30?2:3; cells+=`<i data-l="${l}" class="${k===localDay(today)?"today":""}" title="${k}: ${n} answers"></i>`; }
+  const readySet=readyKeys(A);
+  const meter=(p)=>p==null?`<span class="hint">–</span>`:`<div class="meter"><i style="width:${p}%;background:${p>=80?"var(--good)":p>=60?"var(--warn)":"var(--bad)"}"></i></div>`;
+  const rowFor=(name, ws)=>{ const ks=new Set(ws.map(wkey)), la=scored.filter(a=>ks.has(a.word+"|"+a.list_key)); const a=la.length?Math.round(la.filter(x=>x.correct).length/la.length*100):null;
+    return `<tr><td style="white-space:nowrap">${name}</td><td style="width:38%">${meter(a)}</td><td class="num">${a==null?"–":a+"%"}</td><td class="num hint">${ws.filter(w=>readySet.has(wkey(w))).length}/${ws.length}</td></tr>`; };
+  const lessonRows=[2,1].flatMap(sm=>LESSONS.filter(l=>l.sem===sm).map(l=>{ const ks=LESSON_KEYS(l.id); return rowFor(`<span style="font-family:var(--han);white-space:nowrap">${esc(l.zh)}</span><br><span class="hint" style="white-space:nowrap">${esc(l.id.replace("CME","Book ").replace(" L"," · L"))}</span>`, WORDS.filter(w=>ks.includes(w.date))); })).join("");
+  const topicRows=TOPICS.map(t=>rowFor(`${esc(t.name)}`, topicWords(t.id))).join("");
+  const recent=[...sessIds].map(id=>{ const as=A.filter(a=>a.session_id===id); const s=(h.sessions||[]).find(x=>x.id===id)||{};
+    return {id, t:as[0].shown_at, n:as.length, c:as.filter(a=>a.correct).length, mode:(s.settings&&s.settings.answer)||as[0].answer_mode, dir:(s.settings&&s.settings.dir)||as[0].direction, pick:s.settings&&s.settings.pick,
+            mins:Math.max(1,Math.round((new Date(as[as.length-1].shown_at)-new Date(as[0].shown_at))/60000))}; })
+    .sort((a,b)=>a.t<b.t?1:-1).slice(0,12);
+  const dt=t=>new Date(t).toLocaleString("en-AU",{weekday:"short",day:"numeric",month:"short",hour:"numeric",minute:"2-digit"});
+  const errName={writing:"Character writing mistakes",tones:"Tones wrong",letters:"Pinyin letters wrong",characters:"Wrong characters",meaning:"Wrong meaning",choice:"Picked the wrong option",skipped:"Skipped",self:"Self-marked wrong"};
+  const dirName={c2e:"Meaning",e2c:"Say it in Chinese",h2p:"Pinyin",listen:"Listening",write:"Writing",mix:"Mixed",mixed:"Mixed"};
+  body.innerHTML=`
+    <div class="card exam" id="exam-prog"></div>
+    <div class="stats">
+      <div class="card stat"><b>${streak}</b><span>day streak</span></div>
+      <div class="card stat"><b>${days.length}</b><span>days studied</span></div>
+      <div class="card stat"><b>${sessIds.size}</b><span>rounds</span></div>
+      <div class="card stat"><b>${A.length}</b><span>answers</span></div>
+      <div class="card stat"><b>${acc==null?"–":acc+"%"}</b><span>right (not counting flip)</span></div>
+      <div class="card stat"><b>${secs(medAll)}</b><span>typical answer time</span></div>
+    </div>
+    <div class="card panel"><h3>Trouble words ${trouble.length?`<button class="small-btn" id="practise-trouble">Practise these ${trouble.length}</button>`:""}</h3>
+      ${trouble.length?`<div class="tablewrap"><table><thead><tr><th></th><th>Word</th><th></th><th>Last 5</th><th>Usual mistake</th></tr></thead><tbody>${
+        trouble.map(s=>{ const top=Object.entries(s.errs).sort((a,b)=>b[1]-a[1])[0]; const mx=Object.entries(s.mix).sort((a,b)=>b[1]-a[1])[0];
+          return `<tr><td class="sp">${sayBtn(s.word)}</td><td class="han">${esc(s.word)}</td><td><span style="color:var(--ink);white-space:nowrap;font-weight:600">${esc(s.w.py)}</span><br><span class="hint">${esc(s.w.en)}</span></td>
+            <td class="num"><span class="pill ${s.wrong5>=3?"bad":"warn"}">${s.all.slice(-5).filter(a=>a.correct).length}/${s.all.slice(-5).length} right</span></td>
+            <td class="hint">${top?esc(errName[top[0]]||top[0]):"–"}${mx?`<br>mixed up with <span style="font-family:var(--han)">${esc(mx[0])}</span>`:""}</td></tr>`;}).join("")
+      }</tbody></table></div>`:`<div class="body empty">None yet. A word shows here when it's wrong at least twice in its last five tries.</div>`}</div>
+    <div class="card panel"><h3>Study days <span class="hint">last 12 weeks · darker = more answers</span></h3><div class="body"><div class="heat-wrap"><div class="heat-days" aria-hidden="true"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div><div class="heat">${cells}</div></div></div></div>
+    <div class="card panel"><h3>By lesson <span class="hint">right · ready / words</span></h3><div class="tablewrap"><table><tbody>${lessonRows}</tbody></table></div></div>
+    <div class="card panel"><h3>By topic <span class="hint">right · ready / words</span></h3><div class="tablewrap"><table><tbody>${topicRows}</tbody></table></div></div>
+    <div class="card panel"><h3>By type of question</h3><div class="tablewrap"><table><tbody>${
+      ["c2e","e2c","h2p","listen","write"].map(d=>{ const x=scored.filter(a=>a.direction===d); if(!x.length) return `<tr><td>${dirName[d]}</td><td colspan="3" class="hint">not tried yet</td></tr>`;
+        const p=Math.round(x.filter(a=>a.correct).length/x.length*100), t=median(x.filter(a=>a.correct&&a.response_ms).map(a=>a.response_ms));
+        return `<tr><td>${dirName[d]}</td><td style="width:38%">${meter(p)}</td><td class="num">${p}%</td><td class="num hint">${x.length} · ${secs(t)}</td></tr>`; }).join("")
+    }</tbody></table></div></div>
+    <div class="card panel"><h3>Mistakes</h3><div class="body">${Object.keys(errCount).length?Object.entries(errCount).sort((a,b)=>b[1]-a[1]).map(([k,n])=>`<div style="display:flex;justify-content:space-between;gap:10px"><span>${esc(errName[k]||k)}</span><b>${n}</b></div>`).join(""):`<span class="empty">No mistakes recorded.</span>`}
+      ${errCount.tones&&errCount.letters?`<div class="hint">Tone mistakes vs letter mistakes: ${errCount.tones} vs ${errCount.letters}. ${errCount.tones>errCount.letters?"Tones are the bigger problem: play each word and copy the tone.":"Spelling the pinyin is the bigger problem."}</div>`:""}
+      ${mixups.length?`<div class="hint">Most common mix-ups: ${mixups.slice(0,5).map(m=>`<span style="font-family:var(--han)">${esc(m.s.word)}</span> → <span style="font-family:var(--han)">${esc(m.c)}</span> (${m.n})`).join(", ")}</div>`:""}</div></div>
+    ${slow.length?`<div class="card panel"><h3>Slow but right <span class="hint">answers taking much longer than usual</span></h3><div class="tablewrap"><table><tbody>${slow.map(s=>`<tr><td class="sp">${sayBtn(s.word)}</td><td class="han">${esc(s.word)}</td><td>${esc(s.w.en)}</td><td class="num">${secs(s.med)}</td></tr>`).join("")}</tbody></table></div></div>`:""}
+    <div class="card panel"><h3>Recent rounds</h3><div class="tablewrap"><table><tbody>${
+      recent.map(r=>`<tr><td>${dt(r.t)}</td><td class="hint">${r.pick==="today"?"Today's practice":(dirName[r.dir]||r.dir)} · ${r.mode==="type"?"typed":r.mode==="choice"?"pick 5":r.mode==="flip"?"flip":"write"}</td><td class="num">${r.c}/${r.n}</td><td class="num hint">${r.mins} min</td></tr>`).join("")
+    }</tbody></table></div></div>
+    ${flips.length?`<div class="hint">${flips.length} answers were self-marked in Flip cards mode. They count in the history but not in accuracy or timing.</div>`:""}`;
+  bindSay(body); renderExam("#exam-prog", progLearner);
+  const pt=$("#practise-trouble"); if(pt) pt.onclick=()=>startSession(trouble.map(s=>s.w),"trouble");
+}
+
+/* ===================== boot ===================== */
+window.addEventListener("online",()=>scheduleFlush(0));
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="hidden") flush(); });
+if(!auth) showGate("code");
+else if(!auth.guest && !auth.learnerId && !auth.guestOnce) showGate("who");
+else enterApp();
+</script>
+</body>
+</html>
